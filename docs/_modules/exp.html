@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>exp &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    <title>exp &#8212; Andrew Huang Helps? 1.0.3 documentation</title>
     
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +29,7 @@
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+          <span>Andrew Huang Helps? 1.0.3 documentation</span></a></h1>
         <h2 class="heading"><span>exp</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -113,26 +113,19 @@
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="n">periods</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="arr_ds"><a class="viewcode-back" href="../exp.html#exp.arr_ds">[docs]</a><span class="k">def</span> <span class="nf">arr_ds</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="arr_ds"><a class="viewcode-back" href="../exp.html#exp.arr_ds">[docs]</a><span class="k">def</span> <span class="nf">arr_ds</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read in a saved dataset containing lat, lon, and values</span>
 
 <span class="sd">    :param time: (boolean) - whether to return dataset with time</span>
 <span class="sd">    :param var: (str) - variable type (only tmp/rh currently)</span>
-<span class="sd">    :param timestep: (int) - timestep (only 1/2 right now)</span>
 <span class="sd">    :return ds: (xr.dataset) - dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">time</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="s1">&#39;tmp&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">timestep</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/air.sig995.1948.nc&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/air.sig995.1949.nc&#39;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/air.sig995.1948.nc&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="s1">&#39;rh&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">timestep</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/rhum.sig995.1948.nc&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/rhum.sig995.1949.nc&#39;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/rhum.sig995.1948.nc&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/slp.nc&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>

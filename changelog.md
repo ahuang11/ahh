@@ -1,7 +1,13 @@
 
 ## CHANGELOG:
+### - v1.0.3
+    - Add data files to wheel?
+### - v1.0.2
+    - Missing data folder in pip so this version fixes?
+### - v1.0.1
+    - Now available on pip!
 ### - v1.0.0
-    - Accidentally bloated the repo in past version so deleted the old one and started a new
+    - Accidentally bloated the repo in past version so deleted the old one and started anew
     - Begin semantic versioning
     - Cleaned up duplicate/unnecessary files
 ### -v0.6.2

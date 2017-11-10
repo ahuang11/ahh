@@ -1,8 +1,14 @@
-# ahh - Andrew Huang Helps? v1.0.0
+# ahh - Andrew Huang Helps? v1.0.3
 
 ### Functions that I can easily reference, and maybe you too!
 
 ## HOW TO GET IT:
+New-school method:
+1. `pip install ahh`
+
+2. Ensure your packages version (`pip list`) match with ones listed in requirements.txt
+
+Old-school method:
 1. Type `git clone https://github.com/ahuang11/ahh.git`
 
 2. Go into ahh folder (where setup.py is)
@@ -120,4 +126,4 @@ pre-analysis | scientific | extraneous | era of time | visualization | experimen
 ## KNOWN ISSUES AND HACKS:
 - Installation of cartopy/basemap can be a bit tedious; easy way to install cartopy and basemap if you have Anaconda: 'conda install -c conda-forge cartopy' and 'conda install -c anaconda basemap'
 - Updates to packages listed in requirements may break this package; recommend creating a Python 3 environment and install the specific package versions listed in requirements.txt
-- In version 0.6.2, I accidentally bloated the repo so I decided to reset the repo and start semantic versioning beginning at v1.0.0; you may want to `rm -rf ahh` and `git clone https://github.com/ahuang11/ahh.git` again!
+- In version 0.6.2, I accidentally bloated the repo so I decided to reset the repo and start semantic versioning beginning at v1.0.0; you may want to `rm -rf ahh` and `git clone https://github.com/ahuang11/ahh.git` again (or newly available, `pip install ahh`)!

@@ -5,3 +5,5 @@ ahh.egg-info
 *.gp
 *.ncmap
 tests/output/*
+build/*
+dist/*

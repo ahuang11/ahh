@@ -1,0 +1,5 @@
+#documentation
+recursive-include docs/_build/html *
+
+# data
+recursive-include ahh/data *
