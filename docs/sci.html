@@ -1,0 +1,487 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sci.py - science functions &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ext.py - extra functions" href="ext.html" />
+    <link rel="prev" title="pre.py - prepatory functions" href="pre.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>sci.py - science functions</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="pre.html">pre.py - prepatory functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ext.html">ext.py - extra functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="module-sci">
+<span id="sci-py-science-functions"></span><h1>sci.py - science functions<a class="headerlink" href="#module-sci" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="sci.acosd">
+<code class="descclassname">sci.</code><code class="descname">acosd</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#acosd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.acosd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arc cosine function returning degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; (scalar/arr) - values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(scalar/arr) - arc cosine of the values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.asind">
+<code class="descclassname">sci.</code><code class="descname">asind</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#asind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.asind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arc sine function returning degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; (scalar/arr) - values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(scalar/arr) - arc sine of the values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.atand">
+<code class="descclassname">sci.</code><code class="descname">atand</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#atand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.atand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arc tangent function returning degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; (scalar/arr) - values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(scalar/arr) - arc tangent of the values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.convert">
+<code class="descclassname">sci.</code><code class="descname">convert</code><span class="sig-paren">(</span><em>variable</em>, <em>mm2in=False</em>, <em>c2f=False</em>, <em>c2k=False</em>, <em>f2k=False</em>, <em>mps2mph=False</em>, <em>km2mi=False</em>, <em>reverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the variable from one unit to another.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>variable</strong> &#8211; (np.array) - variable values</li>
+<li><strong>mm2in</strong> &#8211; (boolean) - millimeters to inches</li>
+<li><strong>c2f</strong> &#8211; (boolean) - Celsius to Fahrenheit</li>
+<li><strong>c2k</strong> &#8211; (boolean) - Celsius to Kelvin</li>
+<li><strong>f2k</strong> &#8211; (boolean) - Fahrenheit to Kelvin</li>
+<li><strong>mps2mph</strong> &#8211; (boolean) - meters per second to miles per hour</li>
+<li><strong>reverse</strong> &#8211; (boolean) - reverses the conversions (mm2in becomes in2mm)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return conv_var:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(np.array) - converted variable values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.cosd">
+<code class="descclassname">sci.</code><code class="descname">cosd</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#cosd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.cosd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cosine function evaluating values in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; (scalar/arr) - values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(scalar/arr) - cosine of the values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_anom">
+<code class="descclassname">sci.</code><code class="descname">get_anom</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_anom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_anom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the anomaly by taking the difference
+between actual and mean.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; (np.ma.array) - data values</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return data_anom:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(arr) - anomaly</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_avg">
+<code class="descclassname">sci.</code><code class="descname">get_avg</code><span class="sig-paren">(</span><em>data</em>, <em>axis=0</em>, <em>times_idc=None</em>, <em>lats_idc=None</em>, <em>lons_idc=None</em>, <em>lvls_idc=None</em>, <em>change_lvl_order=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_avg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_avg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the areal and/or time average and/or level, but first,
+data dimensions must be in these orders:
+lat, lon;
+time, lat, lon;
+time, level, lat, lon OR time, lat, lon, level (if change_lvl_order).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; (np.ma.array) - input data</li>
+<li><strong>axis</strong> &#8211; (tuple) - axis to average over</li>
+<li><strong>times_idc</strong> &#8211; (np.array) - time indices</li>
+<li><strong>lats_idc</strong> &#8211; (np.array) - latitude indices</li>
+<li><strong>lons_idc</strong> &#8211; (np.array) - longitude indices</li>
+<li><strong>lvls_idc</strong> &#8211; (float) - level indices</li>
+<li><strong>change_lvl_order</strong> &#8211; (boolean) - changes order of level dimension</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return avg:</th><td class="field-body"><p class="first last">(np.ma.array) - average over given parameters</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_c">
+<code class="descclassname">sci.</code><code class="descname">get_c</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_c"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get c in the Pythagorean theorem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; (scalar) - value</li>
+<li><strong>b</strong> &#8211; (scalar) - value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return c:</th><td class="field-body"><p class="first last">(scalar) - value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_cac">
+<code class="descclassname">sci.</code><code class="descname">get_cac</code><span class="sig-paren">(</span><em>obs</em>, <em>fcst</em>, <em>clim</em>, <em>idc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_cac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_cac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the centered anomaly correlation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obs</strong> &#8211; (np.ma.array) - observation</li>
+<li><strong>fcst</strong> &#8211; (np.ma.array) - forecast</li>
+<li><strong>clim</strong> &#8211; (np.ma.array) - climatology</li>
+<li><strong>idc</strong> &#8211; (np.array) - indices of grid points</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return cac:</th><td class="field-body"><p class="first last">(np.ma.array) - centered anomaly correlation</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_corr">
+<code class="descclassname">sci.</code><code class="descname">get_corr</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_corr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_corr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Pearson&#8217;s correlation coefficient and two tailed p-value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; (scalar/arr) - values</li>
+<li><strong>y</strong> &#8211; (scalar/arr) - values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return corr, pval:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(scalar, scalar) - correlation coefficient, p-value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_counts">
+<code class="descclassname">sci.</code><code class="descname">get_counts</code><span class="sig-paren">(</span><em>data</em>, <em>show=True</em>, <em>return_str=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get count distribution of data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; (np.array) - array of data</li>
+<li><strong>show</strong> &#8211; (boolean) - whether to print out distribution</li>
+<li><strong>return_str</strong> &#8211; (boolean) - whether to return formatted string</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return count_list:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(list) - list of count names and values</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return formatted:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last">(str) - optional formatted string of count list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_norm">
+<code class="descclassname">sci.</code><code class="descname">get_norm</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the data to a range of 0 to 1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; (arr) - data values</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return data_norm:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(arr) - normalized data values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_norm_anom">
+<code class="descclassname">sci.</code><code class="descname">get_norm_anom</code><span class="sig-paren">(</span><em>data_avg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_norm_anom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_norm_anom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the normalized anomaly of some averaged data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_avg</strong> &#8211; (np.ma.array) - average data values</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return data_anom:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(arr) - normalized anomaly</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_regression">
+<code class="descclassname">sci.</code><code class="descname">get_regression</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>deg=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper of np.polyfit to create regressions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; (arr) - x values</li>
+<li><strong>y</strong> &#8211; (arr) - y values</li>
+<li><strong>deg</strong> &#8211; (int) - degree of fitting polynomial</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_rmse">
+<code class="descclassname">sci.</code><code class="descname">get_rmse</code><span class="sig-paren">(</span><em>obs</em>, <em>fcst</em>, <em>idc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_rmse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_rmse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the root mean square error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obs</strong> &#8211; (np.array) - observation</li>
+<li><strong>fcst</strong> &#8211; (np.array) - forecast</li>
+<li><strong>idc</strong> &#8211; (np.array) - indices of grid points</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return rmse:</th><td class="field-body"><p class="first last">(np.array) - root mean square error</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_stats">
+<code class="descclassname">sci.</code><code class="descname">get_stats</code><span class="sig-paren">(</span><em>data</em>, <em>show=True</em>, <em>return_str='vertical'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get basic stats of an array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; (np.array) - array of data</li>
+<li><strong>show</strong> &#8211; (boolean) - whether to print out stats</li>
+<li><strong>return_str</strong> &#8211; (str) - indicator of to return vert, hori, or none str</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return vert_format:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(str) - vertically formatted string</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return hori_format:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">(str) - horizontally formatted string</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return leng, mini, maxi, med, avg, std:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(np.float64) -         length, maximum, medium, average, standard deviation</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_terc_avg">
+<code class="descclassname">sci.</code><code class="descname">get_terc_avg</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_terc_avg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_terc_avg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rolling seasonal terciles</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; (scalar) - value</li>
+<li><strong>b</strong> &#8211; (scalar) - value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return c:</th><td class="field-body"><p class="first last">(scalar) - value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.get_uac">
+<code class="descclassname">sci.</code><code class="descname">get_uac</code><span class="sig-paren">(</span><em>obs</em>, <em>fcst</em>, <em>clim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#get_uac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.get_uac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncentered anomaly correlation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obs</strong> &#8211; (np.ma.array) - observation</li>
+<li><strong>fcst</strong> &#8211; (np.ma.array) - forecast</li>
+<li><strong>clim</strong> &#8211; (np.ma.array) - climatology</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return uac:</th><td class="field-body"><p class="first last">(np.array) - uncentered anomaly correlation</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.sind">
+<code class="descclassname">sci.</code><code class="descname">sind</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#sind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.sind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sine function evaluating values in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; (scalar/arr) - values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(scalar/arr) - sine of the values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sci.tand">
+<code class="descclassname">sci.</code><code class="descname">tand</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sci.html#tand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sci.tand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tangent function evaluating values in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; (scalar/arr) - values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(scalar/arr) - tangent of the values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="pre.html">pre.py - prepatory functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ext.html">ext.py - extra functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

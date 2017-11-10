@@ -1,0 +1,602 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ext.py - extra functions &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="era.py - era of time functions" href="era.html" />
+    <link rel="prev" title="sci.py - science functions" href="sci.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>ext.py - extra functions</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="sci.html">sci.py - science functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="era.html">era.py - era of time functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="module-ext">
+<span id="ext-py-extra-functions"></span><h1>ext.py - extra functions<a class="headerlink" href="#module-ext" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="ext.ahh">
+<code class="descclassname">ext.</code><code class="descname">ahh</code><span class="sig-paren">(</span><em>variable=None</em>, <em>n='ahh'</em>, <em>ignore=None</em>, <em>col=None</em>, <em>time=0</em>, <em>level=0</em>, <em>center=0</em>, <em>offset=0</em>, <em>threshold=15</em>, <em>precision=2</em>, <em>edgeitems=5</em>, <em>suppress=True</em>, <em>snippet=True</em>, <em>fillval_high=99999.0</em>, <em>fillval_low=-99999.0</em>, <em>quiet=False</em>, <em>stop=False</em>, <em>**named_vars</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#ahh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.ahh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper of one_ahh(); explores a variable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>variable</strong> &#8211; (array) - variable to be evaluated</li>
+<li><strong>n</strong> &#8211; (str) - name of variable</li>
+<li><strong>ignore</strong> &#8211; (scalar/str) - a value/str to ignore</li>
+<li><strong>col</strong> &#8211; (str) - if dataframe, name of column</li>
+<li><strong>time</strong> &#8211; (integer) - index of time to print in snippet</li>
+<li><strong>level</strong> &#8211; (integer) - index of time to print in snippet</li>
+<li><strong>center</strong> &#8211; (int) - if not 0, the number*2 to print around the center</li>
+<li><strong>offset</strong> &#8211; (int) - count of indices offset from the center</li>
+<li><strong>threshold</strong> &#8211; (int) - count before abbrieviating the print</li>
+<li><strong>precision</strong> &#8211; (int) - number of decimal places</li>
+<li><strong>edgeitems</strong> &#8211; (int) - how many numbers to print on the edge</li>
+<li><strong>suppress</strong> &#8211; (boolean) - whether to suppress scientific notation</li>
+<li><strong>snippet</strong> &#8211; (boolean) - whether to exclude snippet of values</li>
+<li><strong>fillval_high</strong> &#8211; (float) - anything equal/greater than fill value will
+not be included in the max</li>
+<li><strong>fillval_low</strong> &#8211; (float) - anything equal/less than fill value will
+not be included in the min</li>
+<li><strong>named_vars</strong> &#8211; (args) - named variables to be evaluated (fills in n)</li>
+<li><strong>quiet</strong> &#8211; (boolean) - whether to show snippet/center values</li>
+<li><strong>stop</strong> &#8211; (boolean) - whether to stop the ahh-ing in a loop</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return stop:</th><td class="field-body"><p class="first last">(boolean) - stop the ahh-ing in a loop</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.ahh_xr_check">
+<code class="descclassname">ext.</code><code class="descname">ahh_xr_check</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#ahh_xr_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.ahh_xr_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if variable is xarray; if so, return list of names and items</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> &#8211; (array) - variable to be evaluated</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return varlist:</th><td class="field-body">(list) - list of tuples of variable name and values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.ahhh">
+<code class="descclassname">ext.</code><code class="descname">ahhh</code><span class="sig-paren">(</span><em>*variables</em>, <em>**named_vars</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#ahhh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.ahhh" title="Permalink to this definition">¶</a></dt>
+<dd><p>The lite version of ahh; pass as many variables to this,
+but no settings to change</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>named_vars</strong> &#8211; (args) - variables to be evaluated</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return stop:</th><td class="field-body">(boolean) - stop the ahh-ing in a loop</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.append_to_fn">
+<code class="descclassname">ext.</code><code class="descname">append_to_fn</code><span class="sig-paren">(</span><em>fn</em>, <em>append_str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#append_to_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.append_to_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append string before the file ending</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> &#8211; (str) - filename</li>
+<li><strong>append_str</strong> &#8211; (str) - string to add to filename</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return new_fn:</th><td class="field-body"><p class="first last">(str) - append string combined with filename</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.flatten">
+<code class="descclassname">ext.</code><code class="descname">flatten</code><span class="sig-paren">(</span><em>nested_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flatten a nested list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nested_list</strong> &#8211; (list) - list of lists</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return flattened_list:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(list) - flattened list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.formalize_str">
+<code class="descclassname">ext.</code><code class="descname">formalize_str</code><span class="sig-paren">(</span><em>input_str</em>, <em>suffix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#formalize_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.formalize_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Capitalize string by word and remove underscores.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_str</strong> &#8211; (str) - string to replace underscores and title</li>
+<li><strong>suffix</strong> &#8211; (str) - suffix in string to be removed</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return output_str:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(str) - formalized string</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.get_closest">
+<code class="descclassname">ext.</code><code class="descname">get_closest</code><span class="sig-paren">(</span><em>data</em>, <em>target_val</em>, <em>type_var='typical'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#get_closest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.get_closest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the closest value and index to target value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; (np.array) - data</li>
+<li><strong>target_val</strong> &#8211; (float/datetime.datetime) - target value</li>
+<li><strong>type_var</strong> &#8211; (str) - typical (float) or datetime (datetime.datetime)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return closest_val, closest_val_idc:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(datetime.datetime/float, int) -
+the closest value to target value and the index of that</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.get_idc">
+<code class="descclassname">ext.</code><code class="descname">get_idc</code><span class="sig-paren">(</span><em>lats</em>, <em>lons</em>, <em>lower_lat</em>, <em>upper_lat</em>, <em>left_lon</em>, <em>right_lon</em>, <em>maxmin=False</em>, <em>w2e=False</em>, <em>e2w=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#get_idc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.get_idc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the indices for given latitudes and longitudes boundary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lats</strong> &#8211; (np.array) - array of latitudes</li>
+<li><strong>lons</strong> &#8211; (np.array) - array of longitudes</li>
+<li><strong>lower_lat</strong> &#8211; (float) - southern latitude boundary</li>
+<li><strong>upper_lat</strong> &#8211; (float) - northern latitude boundary</li>
+<li><strong>left_lon</strong> &#8211; (float) - western longitude boundary</li>
+<li><strong>right_lon</strong> &#8211; (float) - eastern longitude boundary</li>
+<li><strong>maxmin</strong> &#8211; (boolean) - return only the max and min of lat/lon idc</li>
+<li><strong>w2e</strong> &#8211; (boolean) - convert input west longitudes to east longitudes</li>
+<li><strong>e2w</strong> &#8211; (boolean) - convert input east longitudes to west longitudes</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return lats_idc, lons_idc:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(np.array, np.array) - indices of lats/lons</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last">(np.int64, np.int64, np.int64, np.int64)              the lowest and highest lat/lon indices</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.get_lvls_idc">
+<code class="descclassname">ext.</code><code class="descname">get_lvls_idc</code><span class="sig-paren">(</span><em>lvls</em>, <em>lower_lvl</em>, <em>upper_lvl</em>, <em>maxmin=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#get_lvls_idc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.get_lvls_idc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the levels indices for given lower and upper boundary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lvls</strong> &#8211; (np.array) - array of levels</li>
+<li><strong>lower_lvl</strong> &#8211; (float) - lower level boundary</li>
+<li><strong>upper_lvl</strong> &#8211; (float) - upper level boundary</li>
+<li><strong>maxmin</strong> &#8211; (boolean) - return only the max and min of level idc</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return lvls_idc:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(np.array) - indices of levels</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return lvl_start_idc, lvl_end_idc:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><ul class="first last simple">
+<li>(np.int64, np.int64)              the lowest and highest level indices</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.get_ocean_mask">
+<code class="descclassname">ext.</code><code class="descname">get_ocean_mask</code><span class="sig-paren">(</span><em>data</em>, <em>lats</em>, <em>lons</em>, <em>reverse=False</em>, <em>apply_mask=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#get_ocean_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.get_ocean_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>CURRENTLY BROKEN IN NEWER VERSIONS!
+Wrapper of basemap.maskoceans to mask either ocean or land</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; (array) - data to be masked</li>
+<li><strong>lats</strong> &#8211; (array) - array of latitudes</li>
+<li><strong>lons</strong> &#8211; (array) - array of longitudes</li>
+<li><strong>reverse</strong> &#8211; (boolean) - whether to mask land instead</li>
+<li><strong>apply_mask</strong> &#8211; (boolean) - whether to apply mask</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return mask:</th><td class="field-body"><p class="first">(arr) - array of booleans</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return data, lons:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><ul class="first last simple">
+<li>return data, lons</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.get_order_mag">
+<code class="descclassname">ext.</code><code class="descname">get_order_mag</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#get_order_mag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.get_order_mag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get order of magnitude of value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; (scalar) - value to extract order of magnitude from</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return order_mag:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(scalar) - order of magnitude</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.get_times_idc">
+<code class="descclassname">ext.</code><code class="descname">get_times_idc</code><span class="sig-paren">(</span><em>times</em>, <em>start_yr</em>, <em>end_yr</em>, <em>start_mth=1</em>, <em>end_mth=12</em>, <em>start_day=1</em>, <em>end_day=31</em>, <em>maxmin=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#get_times_idc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.get_times_idc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the times indices for given start time and end time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>times</strong> &#8211; (np.array) - array of datetimes</li>
+<li><strong>start_yr</strong> &#8211; (int) - lower year boundary</li>
+<li><strong>end_yr</strong> &#8211; (int) - upper year boundary</li>
+<li><strong>start_mth</strong> &#8211; (int) - lower month boundary</li>
+<li><strong>end_mth</strong> &#8211; (int) - upper month boundary</li>
+<li><strong>start_day</strong> &#8211; (int) - lower day boundary</li>
+<li><strong>end_day</strong> &#8211; (int) - upper day boundary</li>
+<li><strong>maxmin</strong> &#8211; (boolean) - return only the max and min of time idc</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return times_idc:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(np.array) - indices of times</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return time_start_idc, time_end_idc:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last">(np.int64, np.int64) -             the lowest and highest time indices</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.glob">
+<code class="descclassname">ext.</code><code class="descname">glob</code><span class="sig-paren">(</span><em>glob_str</em>, <em>nfiles=None</em>, <em>mismatch='warn'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#glob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.glob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return sorted glob list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>glob_str</strong> &#8211; (str) - filename wildcard</li>
+<li><strong>nfiles</strong> &#8211; (int) - number of expected files</li>
+<li><strong>mismatch</strong> &#8211; (str) - warn or raise error</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return glob_list:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(list) - sorted list of filenames</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.lonw2e">
+<code class="descclassname">ext.</code><code class="descname">lonw2e</code><span class="sig-paren">(</span><em>lon</em>, <em>reverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#lonw2e"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.lonw2e" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a west longitude to east longitude, can also do in reverse.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lon</strong> &#8211; (int) - a west longitude</li>
+<li><strong>reverse</strong> &#8211; (boolean) - indicator whether input is an array</li>
+<li><strong>array</strong> &#8211; (boolean) - indicator whether to go the other direction</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return translated_lon:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(int) - translated longitude</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.one_ahh">
+<code class="descclassname">ext.</code><code class="descname">one_ahh</code><span class="sig-paren">(</span><em>variable</em>, <em>n='ahh'</em>, <em>ignore=None</em>, <em>col=None</em>, <em>time=0</em>, <em>level=0</em>, <em>center=0</em>, <em>offset=0</em>, <em>threshold=15</em>, <em>precision=2</em>, <em>edgeitems=5</em>, <em>suppress=True</em>, <em>snippet=True</em>, <em>fillval_high=99999.0</em>, <em>fillval_low=-99999.0</em>, <em>quiet=False</em>, <em>stop=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#one_ahh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.one_ahh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explores type, unnested type, length, and shape of a variable.
+Can optionally include a name to differentiate from other &#8216;ahh&#8217;s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>variable</strong> &#8211; (array) - variable to be evaluated</li>
+<li><strong>n</strong> &#8211; (str) - name of variable</li>
+<li><strong>ignore</strong> &#8211; (scalar/str) - a value/str to ignore</li>
+<li><strong>col</strong> &#8211; (str) - if dataframe, name of column</li>
+<li><strong>time</strong> &#8211; (integer) - index of time to print in snippet</li>
+<li><strong>level</strong> &#8211; (integer) - index of time to print in snippet</li>
+<li><strong>center</strong> &#8211; (int) - if not 0, the number*2 to print around the center</li>
+<li><strong>offset</strong> &#8211; (int) - count of indices offset from the center</li>
+<li><strong>threshold</strong> &#8211; (int) - count before abbrieviating the print</li>
+<li><strong>precision</strong> &#8211; (int) - number of decimal places</li>
+<li><strong>edgeitems</strong> &#8211; (int) - how many numbers to print on the edge</li>
+<li><strong>suppress</strong> &#8211; (boolean) - whether to suppress scientific notation</li>
+<li><strong>snippet</strong> &#8211; (boolean) - whether to exclude snippet of values</li>
+<li><strong>fillval_high</strong> &#8211; (float) - anything equal/greater than fill value will
+not be included in the max</li>
+<li><strong>fillval_low</strong> &#8211; (float) - anything equal/less than fill value will
+not be included in the min</li>
+<li><strong>quiet</strong> &#8211; (boolean) - whether to show snippet/center values</li>
+<li><strong>stop</strong> &#8211; (boolean) - whether to stop the ahh-ing in a loop</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.p">
+<code class="descclassname">ext.</code><code class="descname">p</code><span class="sig-paren">(</span><em>num=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a noticeable mark in the terminal to help debug.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>num</strong> &#8211; (int) - number to differentiate your markers</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.parallelize">
+<code class="descclassname">ext.</code><code class="descname">parallelize</code><span class="sig-paren">(</span><em>function</em>, <em>alist</em>, <em>nthreads=2</em>, <em>arg2=None</em>, <em>arg3=None</em>, <em>arg4=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#parallelize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.parallelize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parallelize a function over a list of items.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>function</strong> &#8211; (function) - tasks to apply to list</li>
+<li><strong>alist</strong> &#8211; (list) - a list of items to parallelize</li>
+<li><strong>nthreads</strong> &#8211; (int) - number of threads to use</li>
+<li><strong>arg2</strong> &#8211; (any) - constant; repeated argument</li>
+<li><strong>arg3</strong> &#8211; (any) - constant; repeated argument</li>
+<li><strong>arg4</strong> &#8211; (any) - constant; repeated argument</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.report_err">
+<code class="descclassname">ext.</code><code class="descname">report_err</code><span class="sig-paren">(</span><em>save=None</em>, <em>comment=None</em>, <em>show=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#report_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.report_err" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>save</strong> &#8211; (str) - name of file to export error message to</li>
+<li><strong>comment</strong> &#8211; (str) - additional comments to append to error report</li>
+<li><strong>show</strong> &#8211; (boolean): whether to print report</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return tb:</th><td class="field-body"><p class="first last">(str) - get a formatted traceback message</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.round_to">
+<code class="descclassname">ext.</code><code class="descname">round_to</code><span class="sig-paren">(</span><em>x</em>, <em>base=1</em>, <em>prec=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#round_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.round_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Round to nearest base with precision.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; (scalar) - value to be rounded from</li>
+<li><strong>base</strong> &#8211; (scalar) - value to be rounded to</li>
+<li><strong>prec</strong> &#8211; (int) - number of decimal points</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return rounded_val:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(scalar) - rounded value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.round_to_nearest_mag">
+<code class="descclassname">ext.</code><code class="descname">round_to_nearest_mag</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#round_to_nearest_mag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.round_to_nearest_mag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Round to nearest order of magnitude.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; (scalar) - value to round to the nearest order of magnitude</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return rounded_val:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(scalar) - rounded value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.sleep">
+<code class="descclassname">ext.</code><code class="descname">sleep</code><span class="sig-paren">(</span><em>seconds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#sleep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.sleep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper of time.sleep; awaits number of seconds input.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>seconds</strong> &#8211; (int) - number of seconds to wait</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.split_consec">
+<code class="descclassname">ext.</code><code class="descname">split_consec</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#split_consec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.split_consec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split into lists where values are no longer the same.
+For example, x = [1, 1, 3, 2]
+split_consec(x) == [array([1, 1]), array([3]), array([2])]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; (arr) - array of data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(list) - list of lists of consecutive same values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ext.strip_2ws">
+<code class="descclassname">ext.</code><code class="descname">strip_2ws</code><span class="sig-paren">(</span><em>astr</em>, <em>strip=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ext.html#strip_2ws"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ext.strip_2ws" title="Permalink to this definition">¶</a></dt>
+<dd><p>Strips double white spaces</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>astr</strong> &#8211; (str) - a string</li>
+<li><strong>strip</strong> &#8211; (boolean) - whether to strip whitespace on edges</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="sci.html">sci.py - science functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="era.html">era.py - era of time functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

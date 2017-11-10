@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>exp.py - experimenting functions &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="vis.py - visualization functions" href="vis.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>exp.py - experimenting functions</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="vis.html">vis.py - visualization functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="module-exp">
+<span id="exp-py-experimenting-functions"></span><h1>exp.py - experimenting functions<a class="headerlink" href="#module-exp" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="exp.arr_1d">
+<code class="descclassname">exp.</code><code class="descname">arr_1d</code><span class="sig-paren">(</span><em>periods=15</em>, <em>freq=1</em>, <em>y=False</em>, <em>xy=False</em>, <em>dt=False</em>, <em>start=0</em>, <em>neg=False</em>, <em>seed=None</em>, <em>no_zeros=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exp.html#arr_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#exp.arr_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a 1 dimensional array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>periods</strong> &#8211; (int) - length of array</li>
+<li><strong>freq</strong> &#8211; (scalar) - frequency of step</li>
+<li><strong>y</strong> &#8211; (boolean) - whether to randomize</li>
+<li><strong>xy</strong> &#8211; (boolean) - whether to return both x and y</li>
+<li><strong>start</strong> &#8211; (scalar) - number to start</li>
+<li><strong>neg</strong> &#8211; (boolean) - include negative values</li>
+<li><strong>seed</strong> &#8211; (int) - repeat random value</li>
+<li><strong>no_zeros</strong> &#8211; (boolean) - no zero values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return arr:</th><td class="field-body"><p class="first last">(arr) - array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="exp.arr_df">
+<code class="descclassname">exp.</code><code class="descname">arr_df</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/exp.html#arr_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#exp.arr_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in a saved dataframe containing datetime values and weather data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return df:</th><td class="field-body">(pd.DataFrame) - dataframe</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="exp.arr_ds">
+<code class="descclassname">exp.</code><code class="descname">arr_ds</code><span class="sig-paren">(</span><em>time=True</em>, <em>var='tmp'</em>, <em>timestep=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exp.html#arr_ds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#exp.arr_ds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in a saved dataset containing lat, lon, and values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>time</strong> &#8211; (boolean) - whether to return dataset with time</li>
+<li><strong>var</strong> &#8211; (str) - variable type (only tmp/rh currently)</li>
+<li><strong>timestep</strong> &#8211; (int) - timestep (only 1/2 right now)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ds:</th><td class="field-body"><p class="first last">(xr.dataset) - dataset</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="exp.arr_dt">
+<code class="descclassname">exp.</code><code class="descname">arr_dt</code><span class="sig-paren">(</span><em>periods=15</em>, <em>freq='D'</em>, <em>start='2016-02-28 00:00'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exp.html#arr_dt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#exp.arr_dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a datetime array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>periods</strong> &#8211; (int) - length of array</li>
+<li><strong>freq</strong> &#8211; (scalar) - frequency of step</li>
+<li><strong>start</strong> &#8211; (scalar) - date to start</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return date_range:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(pd.DatetimeIndex) - range of dates</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="vis.html">vis.py - visualization functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

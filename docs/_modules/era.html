@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>era &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>era</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for era</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ahh.ext</span> <span class="k">import</span> <span class="n">MISC</span>
+<span class="kn">from</span> <span class="nn">calendar</span> <span class="k">import</span> <span class="n">isleap</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">num2date</span>
+<span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
+<span class="kn">import</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;huang.andrew12@gmail.com&#39;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Andrew Huang&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">OutOfRange</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="dt2jul"><a class="viewcode-back" href="../era.html#era.dt2jul">[docs]</a><span class="k">def</span> <span class="nf">dt2jul</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return julian day out of a datetime.</span>
+
+<span class="sd">    :param dt: (datetime.datetime/int) - datetime</span>
+<span class="sd">    :return jday: (int) - julian day</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span><span class="o">.</span><span class="n">tm_yday</span></div>
+
+
+<div class="viewcode-block" id="jul2dt"><a class="viewcode-back" href="../era.html#era.jul2dt">[docs]</a><span class="k">def</span> <span class="nf">jul2dt</span><span class="p">(</span><span class="n">jday</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="mi">2010</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the datetime from a julian date.</span>
+
+<span class="sd">    :param jday: (int) - julian day</span>
+<span class="sd">    :param year: (int) - year to determine if leap</span>
+<span class="sd">    :return dt: (datetime.datetime) - respective datetime</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">this_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">isleap</span><span class="p">(</span><span class="n">year</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">jday</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">jday</span> <span class="o">&gt;</span> <span class="mi">366</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Input Julian day is out of 1-366 range!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="n">OutOfRange</span><span class="p">)</span>
+        <span class="n">cal_str</span> <span class="o">=</span> <span class="s1">&#39;jd_cal_leap&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">jday</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">jday</span> <span class="o">&gt;</span> <span class="mi">365</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Input Julian day is out of 1-365 range!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="n">OutOfRange</span><span class="p">)</span>
+        <span class="n">cal_str</span> <span class="o">=</span> <span class="s1">&#39;jd_cal&#39;</span>
+
+    <span class="n">cal_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">this_dir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cal_str</span><span class="p">))</span>
+
+    <span class="n">cal</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">cal_path</span><span class="p">)</span>
+    <span class="n">jday_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cal</span> <span class="o">==</span> <span class="n">jday</span><span class="p">)</span>
+
+    <span class="n">mth</span> <span class="o">=</span> <span class="n">jday_idc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="n">jday_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">mth</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dtnow"><a class="viewcode-back" href="../era.html#era.dtnow">[docs]</a><span class="k">def</span> <span class="nf">dtnow</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get current UTC in datetime.</span>
+
+<span class="sd">    :return utcnow: (datetime.datetime) - UTC now in datetime</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="td2dict"><a class="viewcode-back" href="../era.html#era.td2dict">[docs]</a><span class="k">def</span> <span class="nf">td2dict</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a breakdown of the timedelta</span>
+
+<span class="sd">    :param td: (datetime.timedelta) - datetime timedelta</span>
+<span class="sd">    :return td_breakdown: (dict) - dictionary containing breakdown</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">days</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">seconds</span> <span class="o">//</span> <span class="mi">3600</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">seconds</span> <span class="o">//</span> <span class="mi">60</span><span class="p">)</span> <span class="o">%</span> <span class="mi">60</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">seconds</span> <span class="o">%</span> <span class="mi">60</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="n">s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="clockit"><a class="viewcode-back" href="../era.html#era.clockit">[docs]</a><span class="k">def</span> <span class="nf">clockit</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_td</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get elapsed time since start.</span>
+
+<span class="sd">    :param start: (datetime.datetime) - start datetime</span>
+<span class="sd">    :param n: (str) - label/description</span>
+<span class="sd">    :param save: (str) - name of file to export error message to</span>
+<span class="sd">    :param show: (boolean): whether to print time taken</span>
+<span class="sd">    :param return_dt: (boolean): whether to return datetime timedelta taken</span>
+<span class="sd">    :return time_taken: (datetime.timedelta) - time taken</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">td_taken</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="n">td_dict</span> <span class="o">=</span> <span class="n">td2dict</span><span class="p">(</span><span class="n">td_taken</span><span class="p">)</span>
+
+    <span class="n">days_taken</span> <span class="o">=</span> <span class="n">td_dict</span><span class="p">[</span><span class="s1">&#39;days&#39;</span><span class="p">]</span>
+    <span class="n">hours_taken</span> <span class="o">=</span> <span class="n">td_dict</span><span class="p">[</span><span class="s1">&#39;hours&#39;</span><span class="p">]</span>
+    <span class="n">minutes_taken</span> <span class="o">=</span> <span class="n">td_dict</span><span class="p">[</span><span class="s1">&#39;minutes&#39;</span><span class="p">]</span>
+    <span class="n">seconds_taken</span> <span class="o">=</span> <span class="n">td_dict</span><span class="p">[</span><span class="s1">&#39;seconds&#39;</span><span class="p">]</span>
+
+    <span class="n">clockit_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Days, </span><span class="si">{1}</span><span class="s1"> Hours, </span><span class="si">{2}</span><span class="s1"> Minutes, </span><span class="si">{3}</span><span class="s1"> Seconds Elapsed&#39;</span>
+    <span class="n">clockit_fmtd</span> <span class="o">=</span> <span class="n">clockit_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">days_taken</span><span class="p">,</span>
+                                      <span class="n">hours_taken</span><span class="p">,</span>
+                                      <span class="n">minutes_taken</span><span class="p">,</span>
+                                      <span class="n">seconds_taken</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">clockit_fmtd</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">save</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;.txt&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">save</span><span class="p">:</span>
+            <span class="n">save</span> <span class="o">+=</span> <span class="s1">&#39;.txt&#39;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">clockit_fmtd</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_td</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">td_taken</span></div>
+
+
+<div class="viewcode-block" id="time2dt"><a class="viewcode-back" href="../era.html#era.time2dt">[docs]</a><span class="k">def</span> <span class="nf">time2dt</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strf</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span>
+            <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a datetime array based on an unopened time variable or arrays of</span>
+<span class="sd">    time strings.</span>
+
+<span class="sd">    :param time: (netCDF4.Variable/str) - unopened time var/string type array</span>
+<span class="sd">    :param strf: (str) - time format of string, option of &#39;infer&#39;</span>
+<span class="sd">    :param calendar: (str) - type of calendar</span>
+<span class="sd">    :param year: (arr) - array of years</span>
+<span class="sd">    :param month: (arr) - array of months</span>
+<span class="sd">    :param day: (arr) - array of days</span>
+<span class="sd">    :param hour: (arr) - array of hours</span>
+<span class="sd">    :param minute: (arr) - array of minutes</span>
+<span class="sd">    :param second: (arr) - array of seconds</span>
+<span class="sd">    :return dt_arr: (np.array) - array of datetimes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">strf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">strf</span> <span class="ow">is</span> <span class="s1">&#39;infer&#39;</span><span class="p">:</span>
+            <span class="n">dt_arr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">infer_datetime_format</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dt_arr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">strf</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dt_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="n">month</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="n">day</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">hour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dt_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hour</span>
+        <span class="k">if</span> <span class="n">minute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dt_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minute</span>
+        <span class="k">if</span> <span class="n">second</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dt_dict</span><span class="p">[</span><span class="s1">&#39;second&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second</span>
+        <span class="n">dt_arr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">dt_dict</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dt_arr</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span>
+                <span class="n">time</span><span class="p">[:],</span> <span class="n">units</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">dt_arr</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span>
+                <span class="n">time</span><span class="p">[:],</span> <span class="n">units</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">dt_arr</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to return pd.DatetimeIndex, returning dt_arr&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dt_arr</span></div>
+
+
+<div class="viewcode-block" id="dt2seas"><a class="viewcode-back" href="../era.html#era.dt2seas">[docs]</a><span class="k">def</span> <span class="nf">dt2seas</span><span class="p">(</span><span class="n">dts</span><span class="p">,</span> <span class="n">four</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a datetime array create an array of seasons.</span>
+
+<span class="sd">    :param dts: (arr) - array of datetimes</span>
+<span class="sd">    :param four: (boolean) - limit to four seasons</span>
+<span class="sd">    :param target: (str) - whether the season &quot;begin&quot; or &quot;end&quot; at month</span>
+<span class="sd">    :return dt_arr: (xr.DataArray) - array of seasons</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">dts</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="s1">&#39;begin&#39;</span><span class="p">:</span>
+        <span class="n">dts</span> <span class="o">=</span> <span class="n">dts</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;1M&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">four</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">target</span><span class="p">:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">({</span><span class="s1">&#39;dts&#39;</span><span class="p">:</span> <span class="n">dts</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">season</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">month_in</span> <span class="o">=</span> <span class="n">MISC</span><span class="p">[</span><span class="s1">&#39;months_initial&#39;</span><span class="p">]</span>
+        <span class="n">months</span> <span class="o">=</span> <span class="n">dts</span><span class="o">.</span><span class="n">month</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">month_in</span><span class="p">[</span><span class="n">month</span> <span class="o">-</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span>
+                             <span class="n">month_in</span><span class="p">[</span><span class="n">month</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span>
+                             <span class="n">month_in</span><span class="p">[</span><span class="n">month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span>
+                             <span class="n">month</span> <span class="ow">in</span> <span class="n">months</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">month_in</span><span class="p">[</span><span class="n">months</span> <span class="o">-</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="n">month_in</span><span class="p">[</span><span class="n">months</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="n">month_in</span><span class="p">[</span><span class="n">months</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="dt2spec"><a class="viewcode-back" href="../era.html#era.dt2spec">[docs]</a><span class="k">def</span> <span class="nf">dt2spec</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert datetimes to specified time value.</span>
+
+<span class="sd">    :param dt: (datetime.datetime) - array of datetimes</span>
+<span class="sd">    :param spec: (str) - name of time value</span>
+<span class="sd">    :return spec_arr: (list) - list of specified time values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">days</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">months</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">years</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;minute&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">minutes</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;second&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">seconds</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">day</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">month</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">year</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;minute&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">minute</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;second&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">second</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="str2spec"><a class="viewcode-back" href="../era.html#era.str2spec">[docs]</a><span class="k">def</span> <span class="nf">str2spec</span><span class="p">(</span><span class="n">str_arr</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert strings to specified time value assuming</span>
+<span class="sd">    &#39;%Y-%m-%d %H:%M:%S&#39; format.</span>
+
+<span class="sd">    :param str: (str) - array of strings</span>
+<span class="sd">    :param spec: (str) - name of time value</span>
+<span class="sd">    :return spec_arr: (np.array) - list of specified time values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">11</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;minute&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="s1">&#39;second&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">19</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dt2num"><a class="viewcode-back" href="../era.html#era.dt2num">[docs]</a><span class="k">def</span> <span class="nf">dt2num</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert datetime to a number to indicate location on matplotlib plot.</span>
+
+<span class="sd">    :param dt: (datetime.datetime) - a datetime object</span>
+<span class="sd">    :param reverse: (boolean) - whether to reverse the operation</span>
+<span class="sd">    :return mdate: (scalar) - value of datetime as a number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mdates</span><span class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mdates</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="spawn_dates_times"><a class="viewcode-back" href="../era.html#era.spawn_dates_times">[docs]</a><span class="k">def</span> <span class="nf">spawn_dates_times</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">spawn_dates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spawn_times</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build date/times column from a timeseries dataframe</span>
+
+<span class="sd">    :param df: (pd.DataFrame) - dataframe with datetime index</span>
+<span class="sd">    :param spawn_dates: (boolean) - whether to spawn year, month, day cols</span>
+<span class="sd">    :param spawn_times: (boolean) - whether to spawn hour, minute, second cols</span>
+<span class="sd">    :return df: (pd.DataFrame) - dataframe with datetime index</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">spawn_dates</span><span class="p">:</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">spawn_times</span><span class="p">:</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="shift_months"><a class="viewcode-back" href="../era.html#era.shift_months">[docs]</a><span class="k">def</span> <span class="nf">shift_months</span><span class="p">(</span><span class="n">dts</span><span class="p">,</span> <span class="n">nmonths</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shift datetime(s) by number of months</span>
+
+<span class="sd">    :param dts: (datetime.datetime/arr) - datetime objects</span>
+<span class="sd">    :param nmonths: (int) - number of months to shift the datetime</span>
+<span class="sd">    :return dts: (datetime.datetime) - datetime shifted by nmonths</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">([</span><span class="n">dt</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">months</span><span class="o">=</span><span class="n">nmonths</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">dts</span><span class="p">])</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dts</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">months</span><span class="o">=</span><span class="n">nmonths</span><span class="p">)</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

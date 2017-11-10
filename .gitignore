@@ -1,0 +1,7 @@
+*.pyc
+.ipynb_checkpoints/
+ahh.egg-info
+*.rgb
+*.gp
+*.ncmap
+tests/output/*

@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>exp &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>exp</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for exp</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ahh</span> <span class="k">import</span> <span class="n">pre</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;huang.andrew12@gmail.com&#39;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Andrew Huang&#39;</span>
+
+
+<div class="viewcode-block" id="arr_1d"><a class="viewcode-back" href="../exp.html#exp.arr_1d">[docs]</a><span class="k">def</span> <span class="nf">arr_1d</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+           <span class="n">xy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">neg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+           <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">no_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a 1 dimensional array</span>
+
+<span class="sd">    :param periods: (int) - length of array</span>
+<span class="sd">    :param freq: (scalar) - frequency of step</span>
+<span class="sd">    :param y: (boolean) - whether to randomize</span>
+<span class="sd">    :param xy: (boolean) - whether to return both x and y</span>
+<span class="sd">    :param start: (scalar) - number to start</span>
+<span class="sd">    :param neg: (boolean) - include negative values</span>
+<span class="sd">    :param seed: (int) - repeat random value</span>
+<span class="sd">    :param no_zeros: (boolean) - no zero values</span>
+<span class="sd">    :return arr: (arr) - array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">xy</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dt</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">arr_dt</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">periods</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">periods</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">neg</span><span class="p">:</span>
+            <span class="n">arr_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span>
+                               <span class="n">periods</span><span class="p">,</span>
+                               <span class="n">freq</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">periods</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arr_1d</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">periods</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span> <span class="o">*</span>
+                      <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">periods</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">arr_1d</span>
+    <span class="k">elif</span> <span class="n">y</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">neg</span><span class="p">:</span>
+            <span class="n">arr_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span>
+                               <span class="n">periods</span><span class="p">,</span>
+                               <span class="n">freq</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">periods</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arr_1d</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">periods</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span> <span class="o">*</span>
+                      <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">periods</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">arr_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">periods</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">no_zeros</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr_1d</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr_1d</span></div>
+
+
+<div class="viewcode-block" id="arr_dt"><a class="viewcode-back" href="../exp.html#exp.arr_dt">[docs]</a><span class="k">def</span> <span class="nf">arr_dt</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2016-02-28 00:00&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a datetime array</span>
+
+<span class="sd">    :param periods: (int) - length of array</span>
+<span class="sd">    :param freq: (scalar) - frequency of step</span>
+<span class="sd">    :param start: (scalar) - date to start</span>
+<span class="sd">    :return date_range: (pd.DatetimeIndex) - range of dates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="n">periods</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="arr_ds"><a class="viewcode-back" href="../exp.html#exp.arr_ds">[docs]</a><span class="k">def</span> <span class="nf">arr_ds</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read in a saved dataset containing lat, lon, and values</span>
+
+<span class="sd">    :param time: (boolean) - whether to return dataset with time</span>
+<span class="sd">    :param var: (str) - variable type (only tmp/rh currently)</span>
+<span class="sd">    :param timestep: (int) - timestep (only 1/2 right now)</span>
+<span class="sd">    :return ds: (xr.dataset) - dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">time</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="s1">&#39;tmp&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timestep</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/air.sig995.1948.nc&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/air.sig995.1949.nc&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="s1">&#39;rh&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timestep</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/rhum.sig995.1948.nc&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/rhum.sig995.1949.nc&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/slp.nc&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="arr_df"><a class="viewcode-back" href="../exp.html#exp.arr_df">[docs]</a><span class="k">def</span> <span class="nf">arr_df</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read in a saved dataframe containing datetime values and weather data</span>
+
+<span class="sd">    :return df: (pd.DataFrame) - dataframe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="n">join_cwd</span><span class="p">(</span><span class="s1">&#39;data/cmi.csv&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pre</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                        <span class="n">spawn_dates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spawn_times</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

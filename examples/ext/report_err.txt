@@ -1,0 +1,8 @@
+Jun 22 23:37Z NameError - name 'ahh' is not defined on line 5: "return ahh" - Continuing on
+Jun 22 23:37Z NameError - name 'ahh' is not defined on line 5: "return ahh" - Continuing on again without showing
+Jul 01 16:47Z NameError - name 'ahh' is not defined on line 5 in <ipython-input-2-55070358f76e>: "return ahh # just to raise an error" - Continuing on
+Jul 01 16:47Z NameError - name 'ahh' is not defined on line 5 in <ipython-input-2-55070358f76e>: "return ahh # just to raise an error" - Continuing on again without showing
+Nov 06 02:31Z NameError - name 'ahh' is not defined on line 5 in <ipython-input-2-55070358f76e>: "return ahh # just to raise an error" - Continuing on
+Nov 06 02:31Z NameError - name 'ahh' is not defined on line 5 in <ipython-input-2-55070358f76e>: "return ahh # just to raise an error" - Continuing on again without showing
+Nov 10 03:43Z NameError - name 'ahh' is not defined on line 5 in <ipython-input-2-55070358f76e>: "return ahh # just to raise an error" - Continuing on
+Nov 10 03:43Z NameError - name 'ahh' is not defined on line 5 in <ipython-input-2-55070358f76e>: "return ahh # just to raise an error" - Continuing on again without showing

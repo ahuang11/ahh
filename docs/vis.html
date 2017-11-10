@@ -1,0 +1,1590 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>vis.py - visualization functions &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="exp.py - experimenting functions" href="exp.html" />
+    <link rel="prev" title="era.py - era of time functions" href="era.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>vis.py - visualization functions</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="era.html">era.py - era of time functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="exp.html">exp.py - experimenting functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="module-vis">
+<span id="vis-py-visualization-functions"></span><h1>vis.py - visualization functions<a class="headerlink" href="#module-vis" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="vis.annotate_point">
+<code class="descclassname">vis.</code><code class="descname">annotate_point</code><span class="sig-paren">(</span><em>ax</em>, <em>x</em>, <em>y</em>, <em>label=''</em>, <em>xytext=(0</em>, <em>0)</em>, <em>size=9</em>, <em>textcoords='offset points'</em>, <em>transform=False</em>, <em>projection=None</em>, <em>bbox={'facecolor': '#202020'</em>, <em>'boxstyle': 'round</em>, <em>pad=0.3'</em>, <em>'alpha': 0.2}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#annotate_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.annotate_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annotate a point on a subplot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>x</strong> &#8211; (scalar) - input x location to annotate</li>
+<li><strong>y</strong> &#8211; (scalar) - input y location to annotate</li>
+<li><strong>label</strong> &#8211; (str) - label of line to be used in legend</li>
+<li><strong>xytext</strong> &#8211; (tup) - x, y offset from input x and y for annotation</li>
+<li><strong>size</strong> &#8211; (scalar) - size of annotation</li>
+<li><strong>textcoords</strong> &#8211; (str) - type of coordinates</li>
+<li><strong>transform</strong> &#8211; (boolean) - whether to use input projection</li>
+<li><strong>projection</strong> &#8211; (cartopy.crs) - projection of plotted scatter</li>
+<li><strong>bbox</strong> &#8211; (dict) - dictionary of boxstyle, facecolor, and alpha of box</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.get_cmap">
+<code class="descclassname">vis.</code><code class="descname">get_cmap</code><span class="sig-paren">(</span><em>colors</em>, <em>n=None</em>, <em>r=False</em>, <em>start=0</em>, <em>stop=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#get_cmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.get_cmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a list of colors into a color map or discretizes a registered cmap
+<a class="reference external" href="http://matplotlib.org/examples/color/colormaps_reference.html">http://matplotlib.org/examples/color/colormaps_reference.html</a>
+<a class="reference external" href="http://www.ncl.ucar.edu/Document/Graphics/color_table_gallery.shtml">http://www.ncl.ucar.edu/Document/Graphics/color_table_gallery.shtml</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>colors</strong> &#8211; (list/str) - a list containing RGB or Python/NCL cmap name</li>
+<li><strong>n</strong> &#8211; (int) - number of colors in cmap</li>
+<li><strong>r</strong> &#8211; (boolean) - reverse colormap</li>
+<li><strong>start</strong> &#8211; (scalar) - value to start on the cmap between 0 and 1</li>
+<li><strong>stop</strong> &#8211; (scalar) - value to end on the cmap between 0 and 1</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return cmap:</th><td class="field-body"><p class="first last">(mpl.cmap) - color map</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.get_color_list">
+<code class="descclassname">vis.</code><code class="descname">get_color_list</code><span class="sig-paren">(</span><em>cmap</em>, <em>hexcodes=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#get_color_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.get_color_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a registered colormap into a list of RGB tuples or hexcodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cmap_name</strong> &#8211; (mpl.cmap/str) - actual colormap or name of color</li>
+<li><strong>hexcodes</strong> &#8211; (boolean) - whether to return a list of hexcodes</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return cmap:</th><td class="field-body"><p class="first last">(list) - list of RGB tuples or hexcodes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.get_loc_keywords">
+<code class="descclassname">vis.</code><code class="descname">get_loc_keywords</code><span class="sig-paren">(</span><em>loc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#get_loc_keywords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.get_loc_keywords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the location keywords based on input loc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>loc</strong> &#8211; (str) - location of the text</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return loc_keywords:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(list) - list of the location keywords</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.get_region_latlim">
+<code class="descclassname">vis.</code><code class="descname">get_region_latlim</code><span class="sig-paren">(</span><em>region</em>, <em>lat1=-90</em>, <em>lat2=90</em>, <em>lon1=-180</em>, <em>lon2=180</em>, <em>tup=False</em>, <em>sliceit=False</em>, <em>w2e=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#get_region_latlim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.get_region_latlim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get latitudinal and longitudinal extents of select regions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>region</strong> &#8211; (str) - acronym of region [us/na/nino34/nh/sh]</li>
+<li><strong>lat1</strong> &#8211; (scalar) lower limit of latitude</li>
+<li><strong>lat2</strong> &#8211; (scalar) upper limit of latitude</li>
+<li><strong>lon1</strong> &#8211; (scalar) left limit of longitude</li>
+<li><strong>lon2</strong> &#8211; (scalar) right limit of longitude</li>
+<li><strong>central_longitude</strong> &#8211; (scalar) - longitude to center the map on</li>
+<li><strong>tup</strong> &#8211; (bool) - whether to return a tuple of extents</li>
+<li><strong>sliceit</strong> &#8211; (bool) - whether to return a slice type of extents</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return lat1, lat2, lon1, lon2:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(scalar) - individual extents</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return latlim, lonlim:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">(tuple) - tuple extents</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return lat_slice, lon_slice:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(slice) - slice extents</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.get_side_bars_recs">
+<code class="descclassname">vis.</code><code class="descname">get_side_bars_recs</code><span class="sig-paren">(</span><em>x</em>, <em>sidebar_count</em>, <em>colors=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#get_side_bars_recs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.get_side_bars_recs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output some recommended values to show side by side bars.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; (arr) - input x array</li>
+<li><strong>sidebar_count</strong> &#8211; (int) - how many bars side by side</li>
+<li><strong>colors</strong> &#8211; (boolean) - whether to return colors</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return width:</th><td class="field-body"><p class="first">(scalar) - adjusted width of color bars</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return align:</th><td class="field-body"><p class="first">(str) - edge or center based on sidebar_count</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return x_list:</th><td class="field-body"><p class="first">(list) - adjusted x values</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return colors:</th><td class="field-body"><p class="first last">(list) - list of colors</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.init_map">
+<code class="descclassname">vis.</code><code class="descname">init_map</code><span class="sig-paren">(</span><em>lat1=-90</em>, <em>lat2=90</em>, <em>lon1=-180</em>, <em>lon2=180</em>, <em>latlim=None</em>, <em>lonlim=None</em>, <em>region=None</em>, <em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>figsize=None</em>, <em>ax=None</em>, <em>title=''</em>, <em>suptitle=False</em>, <em>length_scale=True</em>, <em>lat_labels='auto'</em>, <em>lon_labels='auto'</em>, <em>projection=None</em>, <em>central_longitude=0</em>, <em>land=False</em>, <em>ocean=False</em>, <em>lakes=True</em>, <em>coastlines=True</em>, <em>states=True</em>, <em>countries=True</em>, <em>rivers=False</em>, <em>tight_layout='auto'</em>, <em>dpi=105</em>, <em>save=''</em>, <em>close=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#init_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.init_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a projected map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lat1</strong> &#8211; (scalar) lower limit of latitude</li>
+<li><strong>lat2</strong> &#8211; (scalar) upper limit of latitude</li>
+<li><strong>lon1</strong> &#8211; (scalar) left limit of longitude</li>
+<li><strong>lon2</strong> &#8211; (scalar) right limit of longitude</li>
+<li><strong>latlim</strong> &#8211; (tuple) shortcut for lat1 and lat2</li>
+<li><strong>lonlim</strong> &#8211; (tuple) shortcut for lon1 and lon2</li>
+<li><strong>region</strong> &#8211; (str) region to quickly subset lat and lon extent (na or us)</li>
+<li><strong>rows</strong> &#8211; (int) - number of rows for subplots</li>
+<li><strong>cols</strong> &#8211; (int) - number of columns for subplots</li>
+<li><strong>pos</strong> &#8211; (int) - position of current subplot</li>
+<li><strong>figsize</strong> &#8211; (str/tup) - wide/tall/auto or tuple width x height of fig</li>
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>length_scale</strong> &#8211; (scalar) - whether to scale the labels based on length</li>
+<li><strong>lat_labels</strong> &#8211; (array) - list of latitudes to show on map</li>
+<li><strong>lon_labels</strong> &#8211; (array) - list of longitudes to show on map</li>
+<li><strong>projection</strong> &#8211; (cartopy.crs) - projection of map</li>
+<li><strong>central_longitude</strong> &#8211; (scalar) - longitude to center the map on</li>
+<li><strong>land</strong> &#8211; (boolean) - whether to color fill land</li>
+<li><strong>ocean</strong> &#8211; (boolean) - whether to color fill land</li>
+<li><strong>lakes</strong> &#8211; (boolean) - whether to color fill lakes</li>
+<li><strong>coastlines</strong> &#8211; (boolean) - whether to draw coastline</li>
+<li><strong>states</strong> &#8211; (boolean) - whether to draw state borders</li>
+<li><strong>countries</strong> &#8211; (boolean) - whether to draw country borders</li>
+<li><strong>rivers</strong> &#8211; (boolean) - whether to draw rivers</li>
+<li><strong>tight_layout</strong> &#8211; (str) - on or auto adjust layout of subplots</li>
+<li><strong>dpi</strong> &#8211; (int) - dots per inch to save the figure</li>
+<li><strong>save</strong> &#8211; (str) - if filename is input, will save an image file</li>
+<li><strong>close</strong> &#8211; (boolean) - whether to close figure after saving</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot">
+<code class="descclassname">vis.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>*plot_args</em>, <em>**plot_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot multiple line/bar/scatter plots at once using this syntax
+x, y, &#8216;label&#8217;, &#8216;ptype/color/linestyle/marker&#8217;</p>
+<p>Example - plot a red dashed line with circle marker and a black bar plot
+plot(x, y, &#8216;line plot&#8217;, &#8216;line/red/&#8211;/o&#8217;, x2, y2, &#8216;bar plot&#8217;, &#8216;bar/black&#8217;)</p>
+<p>Equivalent shorthand
+plot(x, y, &#8216;line plot&#8217;, &#8216;l/r/&#8211;/o&#8217;, x2, y2, &#8216;bar plot&#8217;, &#8216;b/k&#8217;)</p>
+<dl class="docutils">
+<dt>Example 2 - plot a green solid line, blue bar plot, yellow scatter plot</dt>
+<dd>with a title, ylabel, and xlabel</dd>
+<dt>plot(x, y, &#8216;labl&#8217;, &#8216;l/r&#8217;, x2, y2, &#8216;labl2&#8217;, &#8216;b/b&#8217;, x3, y3, &#8216;labl3&#8217;, &#8216;s/y&#8217;,</dt>
+<dd>title=&#8217;title&#8217;, ylabel=&#8217;a ylabel&#8217;, xlabel=&#8217;one xlabel&#8217;)</dd>
+</dl>
+<p>Example 3 - adjust figsize while still stacking all the plots
+plot(x, y, &#8216;labl&#8217;, &#8216;l&#8217;, x2, y2, &#8216;labl2&#8217;, &#8216;b&#8217;, figsize=(8, 5), stack=True)</p>
+<p>Example 4 - plot two separate figures
+plot(x, y, &#8216;labl&#8217;, &#8216;l&#8217;, x2, y2, &#8216;labl2&#8217;, &#8216;b&#8217;, stack=False)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>stack</strong> &#8211; (bool) whether to keep stacking if figsize input is provided</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax_list:</th><td class="field-body">(list) - list of axes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot_bar">
+<code class="descclassname">vis.</code><code class="descname">plot_bar</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>figsize=None</em>, <em>ax=None</em>, <em>xlim=None</em>, <em>ylim=None</em>, <em>stats=False</em>, <em>norm=False</em>, <em>anom=False</em>, <em>norm_anom=False</em>, <em>cumsum=False</em>, <em>matchcolor=True</em>, <em>color=None</em>, <em>facecolor='#DF0909'</em>, <em>edgecolor='#DF0909'</em>, <em>alpha=0.75</em>, <em>linewidth=0.25</em>, <em>linestyle='-'</em>, <em>title_pad=0.965</em>, <em>length_scale=True</em>, <em>inherit=True</em>, <em>label=''</em>, <em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>suptitle=False</em>, <em>width='auto'</em>, <em>height=None</em>, <em>align='edge'</em>, <em>xscale='linear'</em>, <em>yscale='linear'</em>, <em>minor_date_ticks=True</em>, <em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>orientation='vertical'</em>, <em>sidebar_count=0</em>, <em>sidebar_pos=1</em>, <em>bar_vals=None</em>, <em>sharex=None</em>, <em>sharey=None</em>, <em>twinx=None</em>, <em>twiny=None</em>, <em>aligned=True</em>, <em>xinvert=False</em>, <em>yinvert=False</em>, <em>legend=None</em>, <em>tight_layout='auto'</em>, <em>dpi=105</em>, <em>save=''</em>, <em>close=True</em>, <em>returnplot=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot_bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw bars on a subplot. Use other functions for full customizability.
+:param x: (arr) - input x array
+:param y: (arr) - input y array
+:param xlim: (tup) - left and right x axis limit in a tuple, respectively
+:param ylim: (tup) - left and right y axis limit in a tuple, respectively
+:param figsize: (str/tup) - wide/tall/auto or tuple width x height of fig
+:param ax: (mpl.axes) - plot axis
+:param stats: (boolean/str) - whether to show stats and if str, the loc
+:param norm: (boolean) - whether to normalize the y
+:param anom: (boolean) - whether to subtract the average of y from y
+:param norm_anom: (boolean) - whether to get the normalized anomaly of y
+:param cumsum: (boolean) - whether to take the cumulative sum of y
+:param matchcolor: (boolean) - whether to match edgecolor with facecolor
+:param color: (str) - facecolor and edgecolor of plotted bar
+:param facecolor: (str) - facecolor of plotted bar
+:param edgecolor: (str) - edgecolor of plotted bar
+:param alpha: (scalar/str) - transparency of the plotted bar
+:param linewidth: (scalar) - width of plotted bar edges
+:param linestyle: (str) - style of the plotted bar edges
+:param title_pad: (scalar) - distance between box and title
+:param suptitle: (boolean) - whether to make a figure title
+:param inherit: (boolean) - whether to inherit previous labels
+:param length_scale: (scalar) - whether to scale the labels based on length
+:param label: (str) - label of line to be used in legend
+:param xlabel: (str) - label of x axis
+:param ylabel: (str) - label of y axis
+:param title: (str) - title of subplot
+:param width: (str/scalar) - width of plotted bars when vertical
+:param height: (str/scalar) - height of plotted bars when horizontal
+:param align: (str) - whether to align plotted bar on center or edge
+:param xscale: (str) - linear or log scale of x axis
+:param yscale: (str) - linear or log scale of y axis
+:param minor_date_ticks: (str) - whether to have date ticks on top axis
+:param rows: (int) - number of rows for subplots
+:param cols: (int) - number of columns for subplots
+:param pos: (int) - position of current subplot
+:param orientation: (str) - whether to have horizontal or vertical bars
+:param sidebar_count: (int) - how many bars per x
+:param sidebar_pos: (int) - the location of the side bar
+:param bar_vals: (str) - format of bar vals
+:param sharex: (mpl.axes) - share x axis ticks with another subplot
+:param sharey: (mpl.axes) - share y axis ticks with another subplot
+:param twinx: (mpl.axes) - share x axis and have another y axis
+:param twiny: (mpl.axes) - share x axis and have another x axis
+:param aligned: (boolean) - whether to keep left and right ticks aligned
+:param xinvert: (boolean) - whether to flip x axis
+:param yinvert: (boolean) - whether to flip y axis
+:param legend: (str) - location of legend
+:param tight_layout: (str) - on or auto adjust layout of subplots
+:param dpi: (int) - dots per inch to save the figure
+:param save: (str) - if filename is input, will save an image file
+:param close: (boolean) - whether to close figure after saving
+:param returnplot: (boolean) - whether to return plotted bar
+:return ax: (mpl.axes) - plot axis
+:return plot: (mpl.axes) - optional bar plot</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot_bounds">
+<code class="descclassname">vis.</code><code class="descname">plot_bounds</code><span class="sig-paren">(</span><em>ax</em>, <em>lat1=-90</em>, <em>lat2=90</em>, <em>lon1=-180</em>, <em>lon2=180</em>, <em>latlim=None</em>, <em>lonlim=None</em>, <em>color='k'</em>, <em>linestyle='solid'</em>, <em>linewidth=1.25</em>, <em>fill=False</em>, <em>alpha=0.75</em>, <em>projection=None</em>, <em>tight_layout='on'</em>, <em>dpi=105</em>, <em>save=''</em>, <em>close=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a bounded region on a map. Default is a rectangle with black outlines.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> &#8211; (matplotlib.axes) - original axis</li>
+<li><strong>lat1</strong> &#8211; (float) - a latitudinal bound (can be any order)</li>
+<li><strong>lat2</strong> &#8211; (float) - another latitudinal bound (can be any order)</li>
+<li><strong>lon1</strong> &#8211; (float) - a longitudinal bound (can be any order)</li>
+<li><strong>lon2</strong> &#8211; (float) - another longitudinal bound (can be any order)</li>
+<li><strong>latlim</strong> &#8211; (tuple) shortcut for lat1 and lat2</li>
+<li><strong>lonlim</strong> &#8211; (tuple) shortcut for lon1 and lon2</li>
+<li><strong>color</strong> &#8211; (str) - matplotlib abbrieviation of color</li>
+<li><strong>linestyle</strong> &#8211; (str) - solid, dashed, dashdot, or dotted linestyle</li>
+<li><strong>linewidth</strong> &#8211; (scalar) - how thick line is</li>
+<li><strong>fill</strong> &#8211; (boolean) - whether to color in the region</li>
+<li><strong>alpha</strong> &#8211; (float) - how transparent it is</li>
+<li><strong>projection</strong> &#8211; (cartopy.crs) - map projection</li>
+<li><strong>tight_layout</strong> &#8211; (str) - on or auto adjust layout of subplots</li>
+<li><strong>dpi</strong> &#8211; (int) - dots per inch to save the figure</li>
+<li><strong>save</strong> &#8211; (str) - save figure if string is specified</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+<li><strong>close</strong> &#8211; (boolean) - whether to close figure after saving</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot_cbar">
+<code class="descclassname">vis.</code><code class="descname">plot_cbar</code><span class="sig-paren">(</span><em>cmap</em>, <em>fig=None</em>, <em>left=0.05</em>, <em>bottom=0.95</em>, <em>width=0.95</em>, <em>height=0.05</em>, <em>label=''</em>, <em>fmt='%1.0f'</em>, <em>label_size=12</em>, <em>drawedges=True</em>, <em>label_color='#5B5B5B'</em>, <em>ticks=None</em>, <em>boundaries=None</em>, <em>tick_size=8</em>, <em>tick_color='#5B5B5B'</em>, <em>color='#202020'</em>, <em>pad=0.075</em>, <em>aspect=25.5</em>, <em>shrink=0.2</em>, <em>length=0</em>, <em>tick_width=0.25</em>, <em>direction='out'</em>, <em>orientation='horizontal'</em>, <em>cax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot_cbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot_cbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot lone color bar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cmap</strong> &#8211; (list/str) - a list containing RGB or Python/NCL cmap name</li>
+<li><strong>fig</strong> &#8211; (boolean) - input figure</li>
+<li><strong>left</strong> &#8211; (scalar) - left padding from figure edge</li>
+<li><strong>bottom</strong> &#8211; (scalar) - bottom padding from figure left edge</li>
+<li><strong>width</strong> &#8211; (scalar) - percent width of figure</li>
+<li><strong>height</strong> &#8211; (scalar) - percent height of figure</li>
+<li><strong>fmt</strong> &#8211; (str) - format of color bar labels</li>
+<li><strong>label_size</strong> &#8211; (scalar) - size of color bar label</li>
+<li><strong>label_color</strong> &#8211; (scalar) - color of color bar label</li>
+<li><strong>ticks</strong> &#8211; (array) - input own tick marks on color bar</li>
+<li><strong>tick_size</strong> &#8211; (scalar) - size of color bar tick labels</li>
+<li><strong>tick_color</strong> &#8211; (scalar) - color of color bar tick labels</li>
+<li><strong>color</strong> &#8211; (scalar) - color of color bar tick marks</li>
+<li><strong>drawedges</strong> &#8211; (scalar) - whether to draw color edges</li>
+<li><strong>pad</strong> &#8211; (scalar) - padding of color bar from plot</li>
+<li><strong>aspect</strong> &#8211; (int) - aspect ratio of color bar</li>
+<li><strong>shrink</strong> &#8211; (scalar) - size of color bar</li>
+<li><strong>length</strong> &#8211; (scalar) - length of color bar tick marks</li>
+<li><strong>tick_width</strong> &#8211; (scalar) - width of color bar tick marks</li>
+<li><strong>direction</strong> &#8211; (str) - direction of color bar tick marks</li>
+<li><strong>orientation</strong> &#8211; (str) - orientation of color bar</li>
+<li><strong>cax</strong> &#8211; (mpl.axes) - plot axis to attach to</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return cbar:</th><td class="field-body"><p class="first last">(mpl.ColorBar) - matplotlib color bar</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot_heatmap">
+<code class="descclassname">vis.</code><code class="descname">plot_heatmap</code><span class="sig-paren">(</span><em>df</em>, <em>figsize=None</em>, <em>ax=None</em>, <em>mask=None</em>, <em>mask2=None</em>, <em>size=12</em>, <em>cmap='RdBu_r'</em>, <em>orientation='vertical'</em>, <em>edgecolor='#202020'</em>, <em>xrotation=0</em>, <em>yrotation=0</em>, <em>data_lim=None</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>inherit=True</em>, <em>label=''</em>, <em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>title_pad=1.025</em>, <em>suptitle=False</em>, <em>length_scale=True</em>, <em>xticklabels=None</em>, <em>yticklabels=None</em>, <em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>fmt=None</em>, <em>pad=0.3</em>, <em>cbar=True</em>, <em>cbar_label=''</em>, <em>shrink=0.2</em>, <em>interval=None</em>, <em>tick_locs=None</em>, <em>xinvert=False</em>, <em>yinvert=True</em>, <em>tight_layout='auto'</em>, <em>dpi=105</em>, <em>save=''</em>, <em>close=True</em>, <em>returnplot=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot_heatmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot_heatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a heatmap on a subplot. Use other functions for full customizability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> &#8211; (pd.DataFrame) - dataframe to be converted into heatmap</li>
+<li><strong>mask</strong> &#8211; (pd.DataFrame) - dataframe containing booleans to show text</li>
+<li><strong>mask2</strong> &#8211; (pd.DataFrame) - dataframe containing booleans to show text</li>
+<li><strong>size</strong> &#8211; (scalar) - size of text over masks</li>
+<li><strong>figsize</strong> &#8211; (str/tup) - wide/tall/auto or tuple width x height of fig</li>
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>cmap</strong> &#8211; (str) - color map</li>
+<li><strong>orientation</strong> &#8211; (str) - orientation of color bar</li>
+<li><strong>data_lim</strong> &#8211; (tup) - shortcut for vmin and vmax</li>
+<li><strong>vmin</strong> &#8211; (scalar) - lower limit of color bar</li>
+<li><strong>vmax</strong> &#8211; (scalar) - upper limit of color bar</li>
+<li><strong>xrotation</strong> &#8211; (scalar) - degrees to rotate x major tick labels</li>
+<li><strong>yrotation</strong> &#8211; (scalar) - degrees to rotate y major tick labels</li>
+<li><strong>inherit</strong> &#8211; (boolean) - whether to inherit previous labels</li>
+<li><strong>label</strong> &#8211; (str) - label of line to be used in legend</li>
+<li><strong>xlabel</strong> &#8211; (str) - label of x axis</li>
+<li><strong>ylabel</strong> &#8211; (str) - label of y axis</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>title_pad</strong> &#8211; (scalar) - distance between box and title</li>
+<li><strong>suptitle</strong> &#8211; (boolean) - whether to make a figure title</li>
+<li><strong>length_scale</strong> &#8211; (scalar) - whether to scale the labels based on length</li>
+<li><strong>xticklabels</strong> &#8211; (list) - manually set x major tick labels</li>
+<li><strong>yticklabels</strong> &#8211; (list) - manually set y major tick labels</li>
+<li><strong>rows</strong> &#8211; (int) - number of rows for subplots</li>
+<li><strong>cols</strong> &#8211; (int) - number of columns for subplots</li>
+<li><strong>pos</strong> &#8211; (int) - position of current subplot</li>
+<li><strong>fmt</strong> &#8211; (str) - format of color bar labels</li>
+<li><strong>pad</strong> &#8211; (scalar) - padding of color bar</li>
+<li><strong>cbar</strong> &#8211; (boolean) - whether to show color bar</li>
+<li><strong>cbar_label</strong> &#8211; (str) - label of color bar</li>
+<li><strong>shrink</strong> &#8211; (scalar) - size of color bar</li>
+<li><strong>interval</strong> &#8211; (scalar) - interval of tick marks on color bar</li>
+<li><strong>tick_locs</strong> &#8211; (array) - input own tick marks on color bar</li>
+<li><strong>xinvert</strong> &#8211; (boolean) - whether to flip x axis</li>
+<li><strong>yinvert</strong> &#8211; (boolean) - whether to flip y axis</li>
+<li><strong>tight_layout</strong> &#8211; (str) - on or auto adjust layout of subplots</li>
+<li><strong>dpi</strong> &#8211; (int) - dots per inch to save the figure</li>
+<li><strong>save</strong> &#8211; (str) - if filename is input, will save an image file</li>
+<li><strong>close</strong> &#8211; (boolean) - whether to close figure after saving</li>
+<li><strong>returnplot</strong> &#8211; (boolean) - whether to return plotted heatmap</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return plot:</th><td class="field-body"><p class="first last">(mpl.axes) - optional line plot</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot_hist">
+<code class="descclassname">vis.</code><code class="descname">plot_hist</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>ptype='bar'</em>, <em>align='edge'</em>, <em>bar_vals=None</em>, <em>width='auto'</em>, <em>norm=False</em>, <em>cumsum=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot histogram using plot line/bar/scatter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; (int/arr) - number of bins or array of bin edges</li>
+<li><strong>y</strong> &#8211; (arr) - array of items</li>
+<li><strong>ptype</strong> &#8211; (str) - whether to plot line, bar, or scatter</li>
+<li><strong>align</strong> &#8211; (str) - whether to align bars on edge or center</li>
+<li><strong>bar_vals</strong> &#8211; (str) - format of bar vals</li>
+<li><strong>width</strong> &#8211; (str/scalar) - width of plotted bars when vertical</li>
+<li><strong>norm</strong> &#8211; (boolean) - whether to normalize the y</li>
+<li><strong>cumsum</strong> &#8211; (boolean) - whether to take the cumulative sum of y</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot_line">
+<code class="descclassname">vis.</code><code class="descname">plot_line</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>figsize=None</em>, <em>ax=None</em>, <em>xlim=None</em>, <em>ylim=None</em>, <em>stats=False</em>, <em>norm=False</em>, <em>anom=False</em>, <em>norm_anom=False</em>, <em>cumsum=False</em>, <em>color='#DF0909'</em>, <em>alpha=0.5</em>, <em>inherit=True</em>, <em>label=''</em>, <em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>suptitle=False</em>, <em>title_pad=0.965</em>, <em>length_scale=True</em>, <em>linewidth=1</em>, <em>linestyle='-'</em>, <em>xscale='linear'</em>, <em>yscale='linear'</em>, <em>minor_date_ticks=True</em>, <em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>label_inline=False</em>, <em>sharex=None</em>, <em>sharey=None</em>, <em>twinx=None</em>, <em>twiny=None</em>, <em>aligned=True</em>, <em>xinvert=False</em>, <em>yinvert=False</em>, <em>legend=None</em>, <em>projection=None</em>, <em>tight_layout='auto'</em>, <em>dpi=105</em>, <em>save=''</em>, <em>close=True</em>, <em>returnplot=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a line on a subplot. Use other functions for full customizability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; (arr) - input x array</li>
+<li><strong>y</strong> &#8211; (arr) - input y array</li>
+<li><strong>figsize</strong> &#8211; (str/tup) - wide/tall/auto or tuple width x height of fig</li>
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>xlim</strong> &#8211; (tup) - left and right x axis limit in a tuple, respectively</li>
+<li><strong>ylim</strong> &#8211; (tup) - left and right y axis limit in a tuple, respectively</li>
+<li><strong>stats</strong> &#8211; (boolean/str) - whether to show stats and if str, the loc</li>
+<li><strong>norm</strong> &#8211; (boolean) - whether to normalize the y</li>
+<li><strong>anom</strong> &#8211; (boolean) - whether to subtract the average of y from y</li>
+<li><strong>norm_anom</strong> &#8211; (boolean) - whether to get the normalized anomaly of y</li>
+<li><strong>cumsum</strong> &#8211; (boolean) - whether to take the cumulative sum of y</li>
+<li><strong>color</strong> &#8211; (str) - color of the plotted line</li>
+<li><strong>alpha</strong> &#8211; (scalar/str) - transparency of the plotted line</li>
+<li><strong>inherit</strong> &#8211; (boolean) - whether to inherit previous labels</li>
+<li><strong>label</strong> &#8211; (str) - label of line to be used in legend</li>
+<li><strong>xlabel</strong> &#8211; (str) - label of x axis</li>
+<li><strong>ylabel</strong> &#8211; (str) - label of y axis</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>title_pad</strong> &#8211; (scalar) - distance between box and title</li>
+<li><strong>suptitle</strong> &#8211; (boolean) - whether to make a figure title</li>
+<li><strong>length_scale</strong> &#8211; (scalar) - whether to scale the labels based on length</li>
+<li><strong>linewidth</strong> &#8211; (scalar) - width of the plotted line</li>
+<li><strong>linestyle</strong> &#8211; (str) - style of the plotted line</li>
+<li><strong>xscale</strong> &#8211; (str) - linear or log scale of x axis</li>
+<li><strong>yscale</strong> &#8211; (str) - linear or log scale of y axis</li>
+<li><strong>minor_date_ticks</strong> &#8211; (str) - whether to have date ticks on top axis</li>
+<li><strong>rows</strong> &#8211; (int) - number of rows for subplots</li>
+<li><strong>cols</strong> &#8211; (int) - number of columns for subplots</li>
+<li><strong>pos</strong> &#8211; (int) - position of current subplot</li>
+<li><strong>label_inline</strong> &#8211; (scalar) - whether to label in line; x-value of label</li>
+<li><strong>sharex</strong> &#8211; (mpl.axes) - share x axis ticks with another subplot</li>
+<li><strong>sharey</strong> &#8211; (mpl.axes) - share y axis ticks with another subplot</li>
+<li><strong>twinx</strong> &#8211; (mpl.axes) - share x axis and have another y axis</li>
+<li><strong>twiny</strong> &#8211; (mpl.axes) - share x axis and have another x axis</li>
+<li><strong>aligned</strong> &#8211; (boolean) - whether to keep left and right ticks aligned</li>
+<li><strong>xinvert</strong> &#8211; (boolean) - whether to flip x axis</li>
+<li><strong>yinvert</strong> &#8211; (boolean) - whether to flip y axis</li>
+<li><strong>legend</strong> &#8211; (str) - location of legend</li>
+<li><strong>projection</strong> &#8211; (cartopy.crs) - projection of plotted line</li>
+<li><strong>tight_layout</strong> &#8211; (str) - on or auto adjust layout of subplots</li>
+<li><strong>dpi</strong> &#8211; (int) - dots per inch to save the figure</li>
+<li><strong>save</strong> &#8211; (str) - if filename is input, will save an image file</li>
+<li><strong>close</strong> &#8211; (boolean) - whether to close figure after saving</li>
+<li><strong>returnplot</strong> &#8211; (boolean) - whether to return plotted line</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return plot:</th><td class="field-body"><p class="first last">(mpl.axes) - optional line plot</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot_map">
+<code class="descclassname">vis.</code><code class="descname">plot_map</code><span class="sig-paren">(</span><em>data</em>, <em>lats=None</em>, <em>lons=None</em>, <em>figsize=None</em>, <em>ax=None</em>, <em>stipple=None</em>, <em>cmap='BlueWhiteOrangeRed'</em>, <em>orientation='horizontal'</em>, <em>wrap=True</em>, <em>data_lim=None</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>balance=True</em>, <em>lat1=-90</em>, <em>lat2=90</em>, <em>lon1=-180</em>, <em>lon2=180</em>, <em>latlim=None</em>, <em>lonlim=None</em>, <em>region=None</em>, <em>title=''</em>, <em>title_pad=1.025</em>, <em>suptitle=False</em>, <em>lat_labels='auto'</em>, <em>lon_labels='auto'</em>, <em>length_scale=True</em>, <em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>fmt=None</em>, <em>cbar=True</em>, <em>cbar_label=''</em>, <em>shrink=0.25</em>, <em>contourf=True</em>, <em>interval=None</em>, <em>tick_locs=None</em>, <em>data2=None</em>, <em>lats2=None</em>, <em>lons2=None</em>, <em>contour=None</em>, <em>contour2=None</em>, <em>clabel=True</em>, <em>clabel2=True</em>, <em>mask_land=False</em>, <em>mask_ocean=False</em>, <em>land=False</em>, <em>ocean=False</em>, <em>coastlines=True</em>, <em>rivers=False</em>, <em>countries=False</em>, <em>states=False</em>, <em>lakes=False</em>, <em>projection=None</em>, <em>central_longitude=0</em>, <em>tight_layout='auto'</em>, <em>dpi=105</em>, <em>save=''</em>, <em>close=True</em>, <em>returnplot=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a map on a subplot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; (array) - data to be mapped</li>
+<li><strong>lats</strong> &#8211; (array) - array of latitudes</li>
+<li><strong>lons</strong> &#8211; (array) - array of longitudes</li>
+<li><strong>figsize</strong> &#8211; (str/tup) - wide/tall/auto or tuple width x height of fig</li>
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>stipple</strong> &#8211; (array) - array of values to be stippled</li>
+<li><strong>cmap</strong> &#8211; (str) - color map</li>
+<li><strong>orientation</strong> &#8211; (str) - orientation of color bar</li>
+<li><strong>wrap</strong> &#8211; (boolean) - fill missing data at prime meridian</li>
+<li><strong>data_lim</strong> &#8211; (tup) - shortcut for vmin and vmax</li>
+<li><strong>vmin</strong> &#8211; (scalar) - lower limit of color bar</li>
+<li><strong>vmax</strong> &#8211; (scalar) - upper limit of color bar</li>
+<li><strong>lat1</strong> &#8211; (scalar) lower limit of latitude</li>
+<li><strong>lat2</strong> &#8211; (scalar) upper limit of latitude</li>
+<li><strong>lon1</strong> &#8211; (scalar) left limit of longitude</li>
+<li><strong>lon2</strong> &#8211; (scalar) right limit of longitude</li>
+<li><strong>latlim</strong> &#8211; (tuple) shortcut for lat1 and lat2</li>
+<li><strong>lonlim</strong> &#8211; (tuple) shortcut for lon1 and lon2</li>
+<li><strong>region</strong> &#8211; (str) region to quickly subset lat and lon extent (na or us)</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>title_pad</strong> &#8211; (scalar) - distance between box and title</li>
+<li><strong>suptitle</strong> &#8211; (boolean) - whether to make a figure title</li>
+<li><strong>lat_labels</strong> &#8211; (array) - list of latitudes to show on map</li>
+<li><strong>lon_labels</strong> &#8211; (array) - list of longitudes to show on map</li>
+<li><strong>length_scale</strong> &#8211; (scalar) - whether to scale the labels based on length</li>
+<li><strong>rows</strong> &#8211; (int) - number of rows for subplots</li>
+<li><strong>cols</strong> &#8211; (int) - number of columns for subplots</li>
+<li><strong>pos</strong> &#8211; (int) - position of current subplot</li>
+<li><strong>fmt</strong> &#8211; (str) - format of color bar labels</li>
+<li><strong>cbar</strong> &#8211; (boolean) - whether to show color bar</li>
+<li><strong>cbar_label</strong> &#8211; (str) - label of color bar</li>
+<li><strong>shrink</strong> &#8211; (scalar) - how much to shrink the color bar</li>
+<li><strong>contourf</strong> &#8211; (boolean) - whether to cartoonize colormap</li>
+<li><strong>interval</strong> &#8211; (scalar) - interval of tick marks on color bar</li>
+<li><strong>tick_locs</strong> &#8211; (array) - input own tick marks on color bar</li>
+<li><strong>data2</strong> &#8211; (array) - contours to be mapped</li>
+<li><strong>lats2</strong> &#8211; (array) - array of contour latitudes</li>
+<li><strong>lons2</strong> &#8211; (array) - array of contour longitudes</li>
+<li><strong>contour</strong> &#8211; (array) - list of values to contour with solid line</li>
+<li><strong>contour2</strong> &#8211; (array) - list of values to contour with dashed line</li>
+<li><strong>clabel</strong> &#8211; (boolean) - whether to show value on solid contours</li>
+<li><strong>clabel2</strong> &#8211; (boolean) - whether to show value on dashed contours</li>
+<li><strong>mask_land</strong> &#8211; (boolean) - whether to mask land</li>
+<li><strong>mask_ocean</strong> &#8211; (boolean) - whether to mask ocean</li>
+<li><strong>land</strong> &#8211; (boolean) - whether to color fill land</li>
+<li><strong>ocean</strong> &#8211; (boolean) - whether to color fill land</li>
+<li><strong>coastlines</strong> &#8211; (boolean) - whether to draw coastline</li>
+<li><strong>rivers</strong> &#8211; (boolean) - whether to draw rivers</li>
+<li><strong>countries</strong> &#8211; (boolean) - whether to draw country borders</li>
+<li><strong>states</strong> &#8211; (boolean) - whether to draw state borders</li>
+<li><strong>lakes</strong> &#8211; (boolean) - whether to color fill lakes</li>
+<li><strong>projection</strong> &#8211; (cartopy.crs) - projection of map</li>
+<li><strong>central_longitude</strong> &#8211; (scalar) - longitude to center the map on</li>
+<li><strong>tight_layout</strong> &#8211; (str) - on or auto adjust layout of subplots</li>
+<li><strong>dpi</strong> &#8211; (int) - dots per inch to save the figure</li>
+<li><strong>save</strong> &#8211; (str) - if filename is input, will save an image file</li>
+<li><strong>close</strong> &#8211; (boolean) - whether to close figure after saving</li>
+<li><strong>returnplot</strong> &#8211; (boolean) - whether to return plotted line</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return plot:</th><td class="field-body"><p class="first last">(mpl.axes) - optional image plot</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.plot_scatter">
+<code class="descclassname">vis.</code><code class="descname">plot_scatter</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>figsize=None</em>, <em>ax=None</em>, <em>xlim=None</em>, <em>ylim=None</em>, <em>stats=False</em>, <em>norm=False</em>, <em>anom=False</em>, <em>norm_anom=False</em>, <em>cumsum=False</em>, <em>matchcolor=True</em>, <em>data_lim=None</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>color=None</em>, <em>facecolor='#DF0909'</em>, <em>edgecolor='#DF0909'</em>, <em>alpha=0.5</em>, <em>linewidth=0.25</em>, <em>size=5</em>, <em>marker='o'</em>, <em>s=None</em>, <em>c=None</em>, <em>cbar=True</em>, <em>cbar_label=''</em>, <em>shrink=0.35</em>, <em>cmap=None</em>, <em>orientation='horizontal'</em>, <em>interval=None</em>, <em>tick_locs=None</em>, <em>inherit=True</em>, <em>label=''</em>, <em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>title_pad=0.965</em>, <em>suptitle=False</em>, <em>length_scale=True</em>, <em>xscale='linear'</em>, <em>yscale='linear'</em>, <em>minor_date_ticks=True</em>, <em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>fmt=None</em>, <em>pad=0.225</em>, <em>sharex=None</em>, <em>sharey=None</em>, <em>twinx=None</em>, <em>twiny=None</em>, <em>aligned=True</em>, <em>xinvert=False</em>, <em>yinvert=False</em>, <em>legend=None</em>, <em>projection=None</em>, <em>tight_layout='auto'</em>, <em>dpi=105</em>, <em>save=''</em>, <em>close=True</em>, <em>returnplot=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#plot_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.plot_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw markers on a subplot. Use other functions for full customizability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; (arr) - input x array</li>
+<li><strong>y</strong> &#8211; (arr) - input y array</li>
+<li><strong>figsize</strong> &#8211; (str/tup) - wide/tall/auto or tuple width x height of fig</li>
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>stats</strong> &#8211; (boolean/str) - whether to show stats and if str, the loc</li>
+<li><strong>xlim</strong> &#8211; (tup) - left and right x axis limit in a tuple, respectively</li>
+<li><strong>ylim</strong> &#8211; (tup) - left and right y axis limit in a tuple, respectively</li>
+<li><strong>norm</strong> &#8211; (boolean) - whether to normalize the y</li>
+<li><strong>anom</strong> &#8211; (boolean) - whether to subtract the average of y from y</li>
+<li><strong>norm_anom</strong> &#8211; (boolean) - whether to get the normalized anomaly of y</li>
+<li><strong>cumsum</strong> &#8211; (boolean) - whether to take the cumulative sum of y</li>
+<li><strong>data_lim</strong> &#8211; (tup) - shortcut for vmin and vmax</li>
+<li><strong>vmin</strong> &#8211; (scalar) - lower limit of color bar</li>
+<li><strong>vmax</strong> &#8211; (scalar) - upper limit of color bar</li>
+<li><strong>matchcolor</strong> &#8211; (boolean) - whether to match edgecolor with facecolor</li>
+<li><strong>color</strong> &#8211; (str) - facecolor and edgecolor of plotted scatter marker</li>
+<li><strong>facecolor</strong> &#8211; (str) - facecolor of plotted scatter marker</li>
+<li><strong>edgecolor</strong> &#8211; (str) - edgecolor of plotted scatter marker</li>
+<li><strong>alpha</strong> &#8211; (scalar/str) - transparency of the plotted scatter marker</li>
+<li><strong>linewidth</strong> &#8211; (scalar) - width of plotted scatter marker edges</li>
+<li><strong>size</strong> &#8211; (scalar) - size of plotted scatter marker</li>
+<li><strong>marker</strong> &#8211; (scalar) - style of plotted scatter marker</li>
+<li><strong>s</strong> &#8211; (arr) - array to map size to</li>
+<li><strong>c</strong> &#8211; (arr) - array to map color to</li>
+<li><strong>cbar</strong> &#8211; (boolean) - whether to show color bar</li>
+<li><strong>cbar_label</strong> &#8211; (str) - label of color bar</li>
+<li><strong>shrink</strong> &#8211; (scalar) - size of color bar</li>
+<li><strong>cmap</strong> &#8211; (str) - color map</li>
+<li><strong>orientation</strong> &#8211; (str) - orientation of color bar</li>
+<li><strong>interval</strong> &#8211; (scalar) - interval of tick marks on color bar</li>
+<li><strong>tick_locs</strong> &#8211; (array) - input own tick marks on color bar</li>
+<li><strong>inherit</strong> &#8211; (boolean) - whether to inherit previous labels</li>
+<li><strong>label</strong> &#8211; (str) - label of line to be used in legend</li>
+<li><strong>xlabel</strong> &#8211; (str) - label of x axis</li>
+<li><strong>ylabel</strong> &#8211; (str) - label of y axis</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>title_pad</strong> &#8211; (scalar) - distance between box and title</li>
+<li><strong>suptitle</strong> &#8211; (boolean) - whether to make a figure title</li>
+<li><strong>length_scale</strong> &#8211; (scalar) - whether to scale the labels based on length</li>
+<li><strong>xscale</strong> &#8211; (str) - linear or log scale of x axis</li>
+<li><strong>yscale</strong> &#8211; (str) - linear or log scale of y axis</li>
+<li><strong>minor_date_ticks</strong> &#8211; (str) - whether to have date ticks on top axis</li>
+<li><strong>rows</strong> &#8211; (int) - number of rows for subplots</li>
+<li><strong>cols</strong> &#8211; (int) - number of columns for subplots</li>
+<li><strong>pos</strong> &#8211; (int) - position of current subplot</li>
+<li><strong>fmt</strong> &#8211; (str) - format of color bar labels</li>
+<li><strong>pad</strong> &#8211; (scalar) - padding of color bar from plot</li>
+<li><strong>sharex</strong> &#8211; (mpl.axes) - share x axis ticks with another subplot</li>
+<li><strong>sharey</strong> &#8211; (mpl.axes) - share y axis ticks with another subplot</li>
+<li><strong>twinx</strong> &#8211; (mpl.axes) - share x axis and have another y axis</li>
+<li><strong>twiny</strong> &#8211; (mpl.axes) - share x axis and have another x axis</li>
+<li><strong>aligned</strong> &#8211; (boolean) - whether to keep left and right ticks aligned</li>
+<li><strong>xinvert</strong> &#8211; (boolean) - whether to flip x axis</li>
+<li><strong>yinvert</strong> &#8211; (boolean) - whether to flip y axis</li>
+<li><strong>legend</strong> &#8211; (str) - location of legend</li>
+<li><strong>projection</strong> &#8211; (cartopy.crs) - projection of plotted scatter</li>
+<li><strong>tight_layout</strong> &#8211; (str) - on or auto adjust layout of subplots</li>
+<li><strong>dpi</strong> &#8211; (int) - dots per inch to save the figure</li>
+<li><strong>save</strong> &#8211; (str) - if filename is input, will save an image file</li>
+<li><strong>close</strong> &#8211; (boolean) - whether to close figure after saving</li>
+<li><strong>returnplot</strong> &#8211; (boolean) - whether to return plotted scatter</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return plot:</th><td class="field-body"><p class="first last">(mpl.axes) - optional scatter plot</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.prettify_ax">
+<code class="descclassname">vis.</code><code class="descname">prettify_ax</code><span class="sig-paren">(</span><em>ax</em>, <em>alpha=0.75</em>, <em>xlabel=None</em>, <em>ylabel=None</em>, <em>title=None</em>, <em>suptitle=False</em>, <em>matchcolor=True</em>, <em>legend='best'</em>, <em>title_pad=1.025</em>, <em>length_scale=False</em>, <em>ticks=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#prettify_ax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.prettify_ax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Beautify a plot axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (matplotlib.axes) - original axis</li>
+<li><strong>alpha</strong> &#8211; (float) - how transparent it is</li>
+<li><strong>xlabel</strong> &#8211; (str) - label of x axis</li>
+<li><strong>ylabel</strong> &#8211; (str) - label of y axis</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>suptitle</strong> &#8211; (boolean) - whether to make a figure title</li>
+<li><strong>matchcolor</strong> &#8211; (boolean) - whether to match edgecolor with facecolor</li>
+<li><strong>legend</strong> &#8211; (str) - location of legend</li>
+<li><strong>title_pad</strong> &#8211; (scalar) - distance between box and title</li>
+<li><strong>length_scale</strong> &#8211; (scalar) - whether to scale the labels based on length</li>
+<li><strong>ticks</strong> &#8211; (boolean) - whether to modify ticks</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(matplotlib.axes) - prettified axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.prettify_bokeh">
+<code class="descclassname">vis.</code><code class="descname">prettify_bokeh</code><span class="sig-paren">(</span><em>p</em>, <em>title_size=15</em>, <em>xlabel_size=15</em>, <em>ylabel_size=15</em>, <em>ytick_label_size=10</em>, <em>xtick_label_size=10</em>, <em>legend_size=10</em>, <em>font='century gothic'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#prettify_bokeh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.prettify_bokeh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scales bokeh plot&#8217;s label sizes based on figure size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p</strong> &#8211; (bokeh.figure) - bokeh figure</li>
+<li><strong>title_size</strong> &#8211; (scalar) - title size</li>
+<li><strong>xlabel_size</strong> &#8211; (scalar) - x label size</li>
+<li><strong>ylabel_size</strong> &#8211; (scalar) - y label size</li>
+<li><strong>xtick_label_size</strong> &#8211; (scalar) - x tick label size</li>
+<li><strong>ytick_label_size</strong> &#8211; (scalar) - y tick label size</li>
+<li><strong>legend</strong> &#8211; (scalar) - size of legend labels</li>
+<li><strong>font</strong> &#8211; (str) - font of labels</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return p:</th><td class="field-body"><p class="first last">(bokeh.figure) - bokeh figure</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.savefig">
+<code class="descclassname">vis.</code><code class="descname">savefig</code><span class="sig-paren">(</span><em>file_path</em>, <em>tight_layout=True</em>, <em>both=False</em>, <em>dpi=105</em>, <em>suffix='auto'</em>, <em>close=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#savefig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.savefig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save figure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_path</strong> &#8211; (str) - path to file</li>
+<li><strong>tight_layout</strong> &#8211; (boolean) - whether to save with tight layout</li>
+<li><strong>both</strong> &#8211; (boolean) - whether to save both png and pdf</li>
+<li><strong>suffix</strong> &#8211; (str/boolean) - whether to append png if not exist</li>
+<li><strong>close</strong> &#8211; (boolean) - whether to close figure after saving</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return file_path:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(str) - path to file</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.scale_it">
+<code class="descclassname">vis.</code><code class="descname">scale_it</code><span class="sig-paren">(</span><em>ax</em>, <em>value</em>, <em>order_mag=1</em>, <em>exp=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#scale_it"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.scale_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale matplotlib plots</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>value</strong> &#8211; (scalar) - value to be scaled</li>
+<li><strong>order_mag</strong> &#8211; (scalar) - the order of magnitude to scale by</li>
+<li><strong>exp</strong> &#8211; (boolean) - whether scaling should be exponential</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return scaled_value:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(scalar) - scaled value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.scale_it_bokeh">
+<code class="descclassname">vis.</code><code class="descname">scale_it_bokeh</code><span class="sig-paren">(</span><em>p</em>, <em>value</em>, <em>order_mag=1</em>, <em>exp=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#scale_it_bokeh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.scale_it_bokeh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale bokeh plots</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p</strong> &#8211; (bokeh.figure) - bokeh figure</li>
+<li><strong>value</strong> &#8211; (scalar) - value to be scaled</li>
+<li><strong>order_mag</strong> &#8211; (scalar) - the order of magnitude to scale by</li>
+<li><strong>exp</strong> &#8211; (boolean) - whether scaling should be exponential</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return scaled_value:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(scalar) - scaled value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_ax">
+<code class="descclassname">vis.</code><code class="descname">set_ax</code><span class="sig-paren">(</span><em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_ax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_ax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create plot axis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rows</strong> &#8211; (int) - number of rows for subplots</li>
+<li><strong>cols</strong> &#8211; (int) - number of columns for subplots</li>
+<li><strong>pos</strong> &#8211; (int) - position of current subplot</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_axes">
+<code class="descclassname">vis.</code><code class="descname">set_axes</code><span class="sig-paren">(</span><em>ax</em>, <em>xlim=None</em>, <em>ylim=None</em>, <em>xscale=None</em>, <em>yscale=None</em>, <em>xinvert=False</em>, <em>yinvert=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify subplot axes settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>xlim</strong> &#8211; (tup) - left and right x axis limit in a tuple, respectively</li>
+<li><strong>ylim</strong> &#8211; (tup) - left and right y axis limit in a tuple, respectively</li>
+<li><strong>xscale</strong> &#8211; (str) - linear or log scale of x axis</li>
+<li><strong>yscale</strong> &#8211; (str) - linear or log scale of y axis</li>
+<li><strong>xinvert</strong> &#8211; (boolean) - whether to flip x axis</li>
+<li><strong>yinvert</strong> &#8211; (boolean) - whether to flip y axis</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_axtext">
+<code class="descclassname">vis.</code><code class="descname">set_axtext</code><span class="sig-paren">(</span><em>ax</em>, <em>text</em>, <em>loc='bottom center'</em>, <em>xy=None</em>, <em>size=12</em>, <em>color='#202020'</em>, <em>xpad=None</em>, <em>ypad=None</em>, <em>alpha=0.5</em>, <em>fha=None</em>, <em>fva=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_axtext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_axtext" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>text</strong> &#8211; (str) - text to put on the subplot</li>
+<li><strong>loc</strong> &#8211; (str) - location of the text</li>
+<li><strong>xy</strong> &#8211; (tup) - coordinate to set text</li>
+<li><strong>size</strong> &#8211; (int) - size in points</li>
+<li><strong>color</strong> &#8211; (str) - color of text</li>
+<li><strong>xpad</strong> &#8211; (scalar) - padding in the x axis direction</li>
+<li><strong>ypad</strong> &#8211; (scalar) - padding in the y axis direction</li>
+<li><strong>alpha</strong> &#8211; (scalar/str) - transparency of text</li>
+<li><strong>fha</strong> &#8211; (boolean) - force the horizontal alignment to be input str</li>
+<li><strong>fva</strong> &#8211; (boolean) - force the vertical alignment to be input str</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_bar_vals">
+<code class="descclassname">vis.</code><code class="descname">set_bar_vals</code><span class="sig-paren">(</span><em>ax</em>, <em>size=7.5</em>, <em>color='#202020'</em>, <em>alpha=0.5</em>, <em>orientation='auto'</em>, <em>inherit_color=False</em>, <em>pad_remover=1</em>, <em>fmt='%d'</em>, <em>yinvert=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_bar_vals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_bar_vals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label the rectangles in bar plots with its respective values.
+Adaptation of: &#8220;<a class="reference external" href="http://composition.al/blog/2015/11/29/a-better-way-to">http://composition.al/blog/2015/11/29/a-better-way-to</a>-    add-labels-to-bar-charts-with-matplotlib/&#8221;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>size</strong> &#8211; (scalar) - size of bar labels</li>
+<li><strong>color</strong> &#8211; (str) - color of bar labels</li>
+<li><strong>alpha</strong> &#8211; (scalar/str) - transparency of bar labels</li>
+<li><strong>orientation</strong> &#8211; (str) - orientation of the labels</li>
+<li><strong>inherit_color</strong> &#8211; (boolean) - whether to inherit color for labels</li>
+<li><strong>pad_remover</strong> &#8211; (scalar): - space to remove between ylim and labels</li>
+<li><strong>fmt</strong> &#8211; (str) - format of color bar labels</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:param yinvert (boolean) - whether to invert the y values of labels
+:return ax: (mpl.axes) - plot axis</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_borders">
+<code class="descclassname">vis.</code><code class="descname">set_borders</code><span class="sig-paren">(</span><em>ax</em>, <em>all_=True</em>, <em>bottom=True</em>, <em>top=True</em>, <em>left=True</em>, <em>right=True</em>, <em>spines='all'</em>, <em>color='#DADADA'</em>, <em>alpha=0.75</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_borders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_borders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify border settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>all</strong> &#8211; (boolean) - whether to show all borders</li>
+<li><strong>bottom</strong> &#8211; (boolean) - whether to show bottom border</li>
+<li><strong>top</strong> &#8211; (boolean) - whether to show top border</li>
+<li><strong>left</strong> &#8211; (boolean) - whether to show left border</li>
+<li><strong>right</strong> &#8211; (boolean) - whether to show right border</li>
+<li><strong>spines</strong> &#8211; (list) - borders to be affected</li>
+<li><strong>color</strong> &#8211; (str) - color of borders</li>
+<li><strong>alpha</strong> &#8211; (str) - transparency of borders</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_cbar">
+<code class="descclassname">vis.</code><code class="descname">set_cbar</code><span class="sig-paren">(</span><em>ax</em>, <em>im</em>, <em>fig=False</em>, <em>label=''</em>, <em>fmt='%1.0f'</em>, <em>label_size=7.5</em>, <em>drawedges=True</em>, <em>label_color='#5B5B5B'</em>, <em>tick_locs=None</em>, <em>tick_size=5</em>, <em>tick_color='#5B5B5B'</em>, <em>color='#202020'</em>, <em>pad=0.1</em>, <em>aspect=25.5</em>, <em>shrink=0.2</em>, <em>length=0</em>, <em>width=0.25</em>, <em>direction='out'</em>, <em>orientation='horizontal'</em>, <em>cax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_cbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_cbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set color bar for a map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>im</strong> &#8211; (mpl.collections/contour) - plotted map</li>
+<li><strong>fig</strong> &#8211; (boolean) - whether to plot a figure wide colorbar</li>
+<li><strong>fmt</strong> &#8211; (str) - format of color bar labels</li>
+<li><strong>label_size</strong> &#8211; (scalar) - size of color bar label</li>
+<li><strong>label_color</strong> &#8211; (scalar) - color of color bar label</li>
+<li><strong>tick_locs</strong> &#8211; (array) - input own tick marks on color bar</li>
+<li><strong>tick_size</strong> &#8211; (scalar) - size of color bar tick labels</li>
+<li><strong>tick_color</strong> &#8211; (scalar) - color of color bar tick labels</li>
+<li><strong>color</strong> &#8211; (scalar) - color of color bar tick marks</li>
+<li><strong>drawedges</strong> &#8211; (scalar) - whether to draw color edges</li>
+<li><strong>pad</strong> &#8211; (scalar) - padding of color bar from plot</li>
+<li><strong>aspect</strong> &#8211; (int) - aspect ratio of color bar</li>
+<li><strong>shrink</strong> &#8211; (scalar) - size of color bar</li>
+<li><strong>length</strong> &#8211; (scalar) - length of color bar tick marks</li>
+<li><strong>width</strong> &#8211; (scalar) - width of color bar tick marks</li>
+<li><strong>direction</strong> &#8211; (str) - direction of color bar tick marks</li>
+<li><strong>orientation</strong> &#8211; (str) - orientation of color bar</li>
+<li><strong>cax</strong> &#8211; (mpl.axes) - plot axis to attach to</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return cbar:</th><td class="field-body"><p class="first last">(mpl.ColorBar) - matplotlib color bar</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_date_ticks">
+<code class="descclassname">vis.</code><code class="descname">set_date_ticks</code><span class="sig-paren">(</span><em>ax</em>, <em>minor_date_ticks=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_date_ticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_date_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use logic on the length of date range to decide the tick marks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>minor_date_ticks</strong> &#8211; (boolean) - whether to show the top date ticks</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return major_xlocator:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(str) - locator of major tick</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return major_xinterval:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">(str) - interval between each major tick</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return major_xformatter:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(str) - formatter of major tick</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return minor_xlocator:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">(str) - locator of minor tick</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return minor_xinterval:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">(str) - interval between each minor tick</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Return minor_xformatter:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">(str) - formatter of minor tick</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return dt_bool:</th><td class="field-body"><p class="first last">(boolean) - whether the x axis is datetimes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_figsize">
+<code class="descclassname">vis.</code><code class="descname">set_figsize</code><span class="sig-paren">(</span><em>width=None</em>, <em>height=None</em>, <em>figsize='wide'</em>, <em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>dpi=105</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_figsize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_figsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set figure size; can be wide, tall, auto, or input tuple.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>width</strong> &#8211; (scalar) - width of figure</li>
+<li><strong>height</strong> &#8211; (scalar) - height of figure</li>
+<li><strong>figsize</strong> &#8211; (str/tup) - wide/tall/auto or tuple width x height of fig</li>
+<li><strong>rows</strong> &#8211; (int) - number of rows for subplots</li>
+<li><strong>cols</strong> &#8211; (int) - number of columns for subplots</li>
+<li><strong>pos</strong> &#8211; (int) - position of current subplot</li>
+<li><strong>dpi</strong> &#8211; (int) - dots per inch to save the figure</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_figtext">
+<code class="descclassname">vis.</code><code class="descname">set_figtext</code><span class="sig-paren">(</span><em>ax</em>, <em>text</em>, <em>size=12</em>, <em>pad=0</em>, <em>loc='bottom center'</em>, <em>color='#202020'</em>, <em>alpha=0.5</em>, <em>fha=None</em>, <em>fva=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_figtext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_figtext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add text to the side of a figure.</p>
+<p>loc choices - center, center bottom, center left, center right,
+upper left, upper right, bottom left, bottom right.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>text</strong> &#8211; (str) - text to put on the figure</li>
+<li><strong>loc</strong> &#8211; (str) - location of the text</li>
+<li><strong>size</strong> &#8211; (int) - size in points</li>
+<li><strong>color</strong> &#8211; (str) - color of text</li>
+<li><strong>alpha</strong> &#8211; (scalar/str) - transparency of text</li>
+<li><strong>fha</strong> &#8211; (boolean) - force the horizontal alignment to be input str</li>
+<li><strong>fva</strong> &#8211; (boolean) - force the vertical alignment to be input str</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_inherited">
+<code class="descclassname">vis.</code><code class="descname">set_inherited</code><span class="sig-paren">(</span><em>ax</em>, <em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>xlim=None</em>, <em>ylim=None</em>, <em>origin_xlim=None</em>, <em>origin_ylim=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_inherited"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_inherited" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get inputs from existing plot and set them again.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>xlabel</strong> &#8211; (str) - label of x axis</li>
+<li><strong>ylabel</strong> &#8211; (str) - label of y axis</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>xlim</strong> &#8211; (tup) - left and right x axis limit in a tuple, respectively</li>
+<li><strong>ylim</strong> &#8211; (tup) - left and right y axis limit in a tuple, respectively</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_inline_label">
+<code class="descclassname">vis.</code><code class="descname">set_inline_label</code><span class="sig-paren">(</span><em>ax</em>, <em>line</em>, <em>label=None</em>, <em>xval=None</em>, <em>size=6</em>, <em>alpha=0.5</em>, <em>color=None</em>, <em>ha='center'</em>, <em>va='center'</em>, <em>bbox={'edgecolor': '#FFFFFF'</em>, <em>'facecolor': '#FFFFFF'</em>, <em>'alpha': 0.2}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_inline_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_inline_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically adds an inline label to line
+<a class="reference external" href="https://github.com/cphyc/matplotlib-label-lines">https://github.com/cphyc/matplotlib-label-lines</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>line</strong> &#8211; (mpl.Line2D) - line to be labeled</li>
+<li><strong>label</strong> &#8211; (str) - label of line</li>
+<li><strong>xval</strong> &#8211; (scalar) - x value of label; defaults to median</li>
+<li><strong>size</strong> &#8211; (scalar) - size of label</li>
+<li><strong>alpha</strong> &#8211; (scalar) - opacity of label</li>
+<li><strong>ha</strong> &#8211; (str) - horizontal alignment of label</li>
+<li><strong>va</strong> &#8211; (str) - vertical alignment of label</li>
+<li><strong>bbox</strong> &#8211; (dict) - dictionary of box surrounding label</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_labels">
+<code class="descclassname">vis.</code><code class="descname">set_labels</code><span class="sig-paren">(</span><em>ax</em>, <em>xlabel=None</em>, <em>ylabel=None</em>, <em>title=None</em>, <em>title_size=13.5</em>, <em>title_color='#202020'</em>, <em>title_alpha=0.75</em>, <em>title_pad=0.965</em>, <em>xlabel_size=11</em>, <em>xlabel_color='#202020'</em>, <em>xlabel_alpha=0.75</em>, <em>xlabel_pad=0.05</em>, <em>ylabel_size=11</em>, <em>ylabel_color='#202020'</em>, <em>ylabel_alpha=0.75</em>, <em>ylabel_pad=0.05</em>, <em>length_scale=True</em>, <em>suptitle=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add and modify title and label settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>xlabel</strong> &#8211; (str) - label of x axis</li>
+<li><strong>ylabel</strong> &#8211; (str) - label of y axis</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>title_size</strong> &#8211; (scalar) - size of title</li>
+<li><strong>title_color</strong> &#8211; (str) - color of title</li>
+<li><strong>title_alpha</strong> &#8211; (scalar) - transparency of title</li>
+<li><strong>title_pad</strong> &#8211; (scalar) - distance between box and title</li>
+<li><strong>xlabel_size</strong> &#8211; (scalar) - size of x label</li>
+<li><strong>xlabel_color</strong> &#8211; (str) - color of x label</li>
+<li><strong>xlabel_alpha</strong> &#8211; (scalar) - transparency of x label</li>
+<li><strong>xlabel_pad</strong> &#8211; (scalar) - distance between ticks and x label</li>
+<li><strong>ylabel_size</strong> &#8211; (scalar) - size of y label</li>
+<li><strong>ylabel_color</strong> &#8211; (str) - color of y label</li>
+<li><strong>ylabel_alpha</strong> &#8211; (scalar) - transparency of y label</li>
+<li><strong>ylabel_pad</strong> &#8211; (scalar) - distance between ticks and y label</li>
+<li><strong>length_scale</strong> &#8211; (scalar) - whether to scale the labels based on length</li>
+<li><strong>suptitle</strong> &#8211; (boolean) - whether to make a figure title</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_latlons">
+<code class="descclassname">vis.</code><code class="descname">set_latlons</code><span class="sig-paren">(</span><em>ax</em>, <em>color='#202020'</em>, <em>alpha=0.75</em>, <em>size=4</em>, <em>top=False</em>, <em>bottom=True</em>, <em>left=True</em>, <em>right=False</em>, <em>lat_labels='auto'</em>, <em>lon_labels='auto'</em>, <em>central_longitude=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_latlons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_latlons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set lat lon labels for a map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>color</strong> &#8211; (scalar) - color of  lat lon labels</li>
+<li><strong>alpha</strong> &#8211; (scalar/str) - transparency of lat lon labels</li>
+<li><strong>size</strong> &#8211; (scalar) - size of lat lon labels</li>
+<li><strong>bottom</strong> &#8211; (boolean) - whether to show bottom lon labels</li>
+<li><strong>top</strong> &#8211; (boolean) - whether to show top lon labels</li>
+<li><strong>left</strong> &#8211; (boolean) - whether to show left lat labels</li>
+<li><strong>right</strong> &#8211; (boolean) - whether to show right lat labels</li>
+<li><strong>lat_labels</strong> &#8211; (array) - list of latitudes to show on map</li>
+<li><strong>lon_labels</strong> &#8211; (array) - list of longitudes to show on map</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return gl:</th><td class="field-body"><p class="first last">(ax.gridlines) - gridlines</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_legend">
+<code class="descclassname">vis.</code><code class="descname">set_legend</code><span class="sig-paren">(</span><em>ax</em>, <em>size=12</em>, <em>color='#202020'</em>, <em>alpha=0.5</em>, <em>loc='best'</em>, <em>frame=False</em>, <em>ncol=1</em>, <em>nscatter=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_legend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_legend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add and modify legend settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>size</strong> &#8211; (str) - size of legend labels</li>
+<li><strong>color</strong> &#8211; (str) - color of legend labels</li>
+<li><strong>alpha</strong> &#8211; (str) - transparency of legend labels</li>
+<li><strong>loc</strong> &#8211; (str) - location of legend</li>
+<li><strong>frame</strong> &#8211; (boolean) - whether to have a box around legend</li>
+<li><strong>ncol</strong> &#8211; (int) - number of legend columns</li>
+<li><strong>nscatter</strong> &#8211; (int) - number of scatter points to show in legend</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_major_grid">
+<code class="descclassname">vis.</code><code class="descname">set_major_grid</code><span class="sig-paren">(</span><em>ax</em>, <em>xgrid=True</em>, <em>ygrid=True</em>, <em>linestyle=(0</em>, <em>(16</em>, <em>4))</em>, <em>linewidth=0.095</em>, <em>xcolor='#202020'</em>, <em>ycolor='#202020'</em>, <em>xalpha=0.3</em>, <em>yalpha=0.3</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_major_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_major_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify major grid settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>xgrid</strong> &#8211; (boolean) - whether to show vertical major grid</li>
+<li><strong>ygrid</strong> &#8211; (boolean) - whether to show horizontal major grid</li>
+<li><strong>linestyle</strong> &#8211; (str) - linestyle of major grid</li>
+<li><strong>xcolor</strong> &#8211; (str) - color of vertical major grid</li>
+<li><strong>ycolor</strong> &#8211; (str) - color of horizontal major grid</li>
+<li><strong>xalpha</strong> &#8211; (scalar) - transparency of vertical major grid</li>
+<li><strong>yalpha</strong> &#8211; (scalar) - transparency of horizontal major grid</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_major_tick_labels">
+<code class="descclassname">vis.</code><code class="descname">set_major_tick_labels</code><span class="sig-paren">(</span><em>ax</em>, <em>axes='both'</em>, <em>xticklabels=None</em>, <em>yticklabels=None</em>, <em>pad=1.25</em>, <em>size=10</em>, <em>color='#5B5B5B'</em>, <em>bottom=True</em>, <em>top=False</em>, <em>left=True</em>, <em>right=False</em>, <em>xrotation=0</em>, <em>yrotation=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_major_tick_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_major_tick_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify major tick label settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>axes</strong> &#8211; (list) - x and/or y axis to change</li>
+<li><strong>xticklabels</strong> &#8211; (list) - manually set x major tick labels</li>
+<li><strong>yticklabels</strong> &#8211; (list) - manually set y major tick labels</li>
+<li><strong>pad</strong> &#8211; (scalar) - distance between ticks and major tick labels</li>
+<li><strong>size</strong> &#8211; (scalar) - size of major tick labels</li>
+<li><strong>color</strong> &#8211; (str) - color of major tick labels</li>
+<li><strong>bottom</strong> &#8211; (boolean) - whether to show bottom major tick labels</li>
+<li><strong>top</strong> &#8211; (boolean) - whether to show top major tick labels</li>
+<li><strong>left</strong> &#8211; (boolean) - whether to show left major tick labels</li>
+<li><strong>right</strong> &#8211; (boolean) - whether to show right major tick labels</li>
+<li><strong>xrotation</strong> &#8211; (scalar) - degrees to rotate x major tick labels</li>
+<li><strong>yrotation</strong> &#8211; (scalar) - degrees to rotate y major tick labels</li>
+<li><strong>scale</strong> &#8211; (scalar) - scaling exponent</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_major_ticks">
+<code class="descclassname">vis.</code><code class="descname">set_major_ticks</code><span class="sig-paren">(</span><em>ax</em>, <em>axes='both'</em>, <em>xticks=None</em>, <em>yticks=None</em>, <em>direction='out'</em>, <em>width=0.1</em>, <em>size=2</em>, <em>color='#DADADA'</em>, <em>left=True</em>, <em>right=False</em>, <em>bottom=True</em>, <em>top=False</em>, <em>xlocator=None</em>, <em>xinterval=None</em>, <em>xformatter=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_major_ticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_major_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify major tick settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>axes</strong> &#8211; (list) - x and/or y axis to change</li>
+<li><strong>xticks</strong> &#8211; (list) - manually set x major ticks</li>
+<li><strong>yticks</strong> &#8211; (list) - manually set y major ticks</li>
+<li><strong>direction</strong> &#8211; (str) - direction of tick</li>
+<li><strong>width</strong> &#8211; (str) - width of major ticks</li>
+<li><strong>size</strong> &#8211; (str) - length of major ticks</li>
+<li><strong>color</strong> &#8211; (str) - color of major ticks</li>
+<li><strong>bottom</strong> &#8211; (boolean) - whether to show bottom major tick</li>
+<li><strong>top</strong> &#8211; (boolean) - whether to show top major tick</li>
+<li><strong>left</strong> &#8211; (boolean) - whether to show left major tick</li>
+<li><strong>right</strong> &#8211; (boolean) - whether to show right major tick</li>
+<li><strong>xlocator</strong> &#8211; (str) - auto, years, months, days, hours, interval of tick</li>
+<li><strong>xinterval</strong> &#8211; (str) - interval of date ticks</li>
+<li><strong>xformatter</strong> &#8211; (str) - how to display the major tick labels</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_minor_grid">
+<code class="descclassname">vis.</code><code class="descname">set_minor_grid</code><span class="sig-paren">(</span><em>ax</em>, <em>xgrid=True</em>, <em>ygrid=True</em>, <em>linestyle=(0</em>, <em>(5</em>, <em>5))</em>, <em>linewidth=0.095</em>, <em>xcolor='#202020'</em>, <em>ycolor='#202020'</em>, <em>xalpha=0.5</em>, <em>yalpha=0.5</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_minor_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_minor_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify minor grid settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>xgrid</strong> &#8211; (boolean) - whether to show vertical minor grid</li>
+<li><strong>ygrid</strong> &#8211; (boolean) - whether to show horizontal minor grid</li>
+<li><strong>linestyle</strong> &#8211; (str) - linestyle of minor grid</li>
+<li><strong>xcolor</strong> &#8211; (str) - color of vertical minor grid</li>
+<li><strong>ycolor</strong> &#8211; (str) - color of horizontal minor grid</li>
+<li><strong>xalpha</strong> &#8211; (scalar) - transparency of vertical minor grid</li>
+<li><strong>yalpha</strong> &#8211; (scalar) - transparency of horizontal minor grid</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_minor_tick_labels">
+<code class="descclassname">vis.</code><code class="descname">set_minor_tick_labels</code><span class="sig-paren">(</span><em>ax</em>, <em>axes='both'</em>, <em>xticklabels=None</em>, <em>yticklabels=None</em>, <em>pad=1.25</em>, <em>size=9</em>, <em>color='#5B5B5B'</em>, <em>bottom=False</em>, <em>top=False</em>, <em>left=False</em>, <em>right=False</em>, <em>xrotation=0</em>, <em>yrotation=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_minor_tick_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_minor_tick_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify minor tick label settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>axes</strong> &#8211; (list) - x and/or y axis to change</li>
+<li><strong>xticklabels</strong> &#8211; (list) - manually set x minor tick labels</li>
+<li><strong>yticklabels</strong> &#8211; (list) - manually set y minor tick labels</li>
+<li><strong>pad</strong> &#8211; (scalar) - distance between ticks and minor tick labels</li>
+<li><strong>size</strong> &#8211; (scalar) - size of minor tick labels</li>
+<li><strong>color</strong> &#8211; (str) - color of minor tick labels</li>
+<li><strong>bottom</strong> &#8211; (boolean) - whether to show bottom minor tick labels</li>
+<li><strong>top</strong> &#8211; (boolean) - whether to show top minor tick labels</li>
+<li><strong>left</strong> &#8211; (boolean) - whether to show left minor tick labels</li>
+<li><strong>right</strong> &#8211; (boolean) - whether to show right minor tick labels</li>
+<li><strong>xrotation</strong> &#8211; (scalar) - degrees to rotate x minor tick labels</li>
+<li><strong>yrotation</strong> &#8211; (scalar) - degrees to rotate y minor tick labels</li>
+<li><strong>scale</strong> &#8211; (scalar) - scaling exponent</li>
+<li><strong>kwargs</strong> &#8211; (kwargs) - additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_minor_ticks">
+<code class="descclassname">vis.</code><code class="descname">set_minor_ticks</code><span class="sig-paren">(</span><em>ax</em>, <em>axes='both'</em>, <em>xticks=None</em>, <em>yticks=None</em>, <em>direction='out'</em>, <em>width=0.1</em>, <em>size=2</em>, <em>color='#DADADA'</em>, <em>left=False</em>, <em>right=False</em>, <em>bottom=True</em>, <em>top=False</em>, <em>xlocator=None</em>, <em>xinterval=3</em>, <em>xformatter=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_minor_ticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_minor_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify minor tick settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; (mpl.axes) - plot axis</li>
+<li><strong>axes</strong> &#8211; (list) - x and/or y axis to change</li>
+<li><strong>xticks</strong> &#8211; (list) - manually set x minor ticks</li>
+<li><strong>yticks</strong> &#8211; (list) - manually set y minor ticks</li>
+<li><strong>direction</strong> &#8211; (str) - direction of tick</li>
+<li><strong>width</strong> &#8211; (str) - width of minor ticks</li>
+<li><strong>size</strong> &#8211; (str) - length of minor ticks</li>
+<li><strong>color</strong> &#8211; (str) - color of minor ticks</li>
+<li><strong>bottom</strong> &#8211; (boolean) - whether to show bottom minor tick</li>
+<li><strong>top</strong> &#8211; (boolean) - whether to show top minor tick</li>
+<li><strong>left</strong> &#8211; (boolean) - whether to show left minor tick</li>
+<li><strong>right</strong> &#8211; (boolean) - whether to show right minor tick</li>
+<li><strong>xlocator</strong> &#8211; (str) - auto, years, months, days, hours, interval of tick</li>
+<li><strong>xinterval</strong> &#8211; (str) - interval of date ticks</li>
+<li><strong>xformatter</strong> &#8211; (str) - how to display the minor tick labels</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return ax:</th><td class="field-body"><p class="first last">(mpl.axes) - plot axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_share">
+<code class="descclassname">vis.</code><code class="descname">set_share</code><span class="sig-paren">(</span><em>ax1</em>, <em>ax2</em>, <em>axis='x'</em>, <em>xlabel=''</em>, <em>ylabel=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_share"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_share" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match the tick locations of another axis and hide the current tick labels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax1</strong> &#8211; (mpl.axes) - plot axis to adapt</li>
+<li><strong>ax2</strong> &#8211; (mpl.axes) - plot axis to mimic ticks</li>
+<li><strong>axis</strong> &#8211; (str) - share x or y axis</li>
+<li><strong>xlabel</strong> &#8211; (str) - label of x axis</li>
+<li><strong>ylabel</strong> &#8211; (str) - label of y axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return ax1, ax2:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(mpl.axes) - plot axes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.set_twin">
+<code class="descclassname">vis.</code><code class="descname">set_twin</code><span class="sig-paren">(</span><em>ax1</em>, <em>ax2</em>, <em>axis='x'</em>, <em>title_pad=1.09</em>, <em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>suptitle=False</em>, <em>aligned=True</em>, <em>length_scale=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#set_twin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.set_twin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create another y axis on the same subplot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax1</strong> &#8211; (mpl.axes) - plot axis on the right to adapt</li>
+<li><strong>ax2</strong> &#8211; (mpl.axes) - plot axis on the left or the one to mimic</li>
+<li><strong>axis</strong> &#8211; (str) - twin x or y axis</li>
+<li><strong>xlabel</strong> &#8211; (str) - label of x axis</li>
+<li><strong>ylabel</strong> &#8211; (str) - label of y axis</li>
+<li><strong>title</strong> &#8211; (str) - title of subplot</li>
+<li><strong>suptitle</strong> &#8211; (boolean) - whether to make a figure title</li>
+<li><strong>aligned</strong> &#8211; (boolean) - whether to keep left and right ticks aligned</li>
+<li><strong>scale</strong> &#8211; (scalar) - scaling exponent</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return ax1, ax2:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(mpl.axes) - plot axes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vis.utils">
+<code class="descclassname">vis.</code><code class="descname">utils</code><span class="sig-paren">(</span><em>close=False</em>, <em>figsize=None</em>, <em>ax=False</em>, <em>rows=1</em>, <em>cols=1</em>, <em>pos=1</em>, <em>tight_layout=False</em>, <em>projection=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vis.html#utils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vis.utils" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>close</strong> &#8211; (boolean) - whether to close subplots</li>
+<li><strong>figsize</strong> &#8211; (str/tup) - wide/tall/auto or tuple width x height of fig</li>
+<li><strong>ax</strong> &#8211; (boolean) - whether to return subplot</li>
+<li><strong>rows</strong> &#8211; (boolean) - whether to close subplots</li>
+<li><strong>cols</strong> &#8211; (boolean) - whether to close subplots</li>
+<li><strong>pos</strong> &#8211; (boolean) - whether to close subplots</li>
+<li><strong>tight_layout</strong> &#8211; (boolean) - whether to save with tight layout</li>
+<li><strong>projection</strong> &#8211; (cartopy.crs) - projection of map</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="era.html">era.py - era of time functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="exp.html">exp.py - experimenting functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

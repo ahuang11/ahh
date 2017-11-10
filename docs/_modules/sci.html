@@ -1,0 +1,608 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sci &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>sci</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for sci</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">from</span> <span class="nn">ahh</span> <span class="k">import</span> <span class="n">ext</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">scipy.stats.stats</span> <span class="k">import</span> <span class="n">pearsonr</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;huang.andrew12@gmail.com&#39;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Andrew Huang&#39;</span>
+
+
+<div class="viewcode-block" id="get_uac"><a class="viewcode-back" href="../sci.html#sci.get_uac">[docs]</a><span class="k">def</span> <span class="nf">get_uac</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">fcst</span><span class="p">,</span> <span class="n">clim</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the uncentered anomaly correlation.</span>
+
+<span class="sd">    :param obs: (np.ma.array) - observation</span>
+<span class="sd">    :param fcst: (np.ma.array) - forecast</span>
+<span class="sd">    :param clim: (np.ma.array) - climatology</span>
+<span class="sd">    :return uac: (np.array) - uncentered anomaly correlation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size_arr</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">len_arr</span> <span class="o">=</span> <span class="n">size_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">uac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">len_arr</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_arr</span><span class="p">):</span>
+        <span class="n">fcst_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fcst</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">clim</span><span class="p">)</span>
+        <span class="n">obs_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">clim</span><span class="p">)</span>
+        <span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fcst_prime</span> <span class="o">*</span> <span class="n">obs_prime</span><span class="p">)</span>
+        <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">fcst_prime</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">obs_prime</span><span class="p">))</span>
+        <span class="n">uac</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">denominator</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">uac</span></div>
+
+
+<div class="viewcode-block" id="get_cac"><a class="viewcode-back" href="../sci.html#sci.get_cac">[docs]</a><span class="k">def</span> <span class="nf">get_cac</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">fcst</span><span class="p">,</span> <span class="n">clim</span><span class="p">,</span> <span class="n">idc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the centered anomaly correlation.</span>
+
+<span class="sd">    :param obs: (np.ma.array) - observation</span>
+<span class="sd">    :param fcst: (np.ma.array) - forecast</span>
+<span class="sd">    :param clim: (np.ma.array) - climatology</span>
+<span class="sd">    :param idc: (np.array) - indices of grid points</span>
+<span class="sd">    :return cac: (np.ma.array) - centered anomaly correlation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size_arr</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">len_arr</span> <span class="o">=</span> <span class="n">size_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">len_arr</span><span class="p">)</span>
+
+    <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="n">idc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">idc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="n">idc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">idc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_arr</span><span class="p">):</span>
+        <span class="n">fcst_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">fcst</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+            <span class="n">clim</span><span class="p">[</span><span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">obs_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">obs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+            <span class="n">clim</span><span class="p">[</span><span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">fcst_prime_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">fcst</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                     <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                <span class="n">clim</span><span class="p">[</span><span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                     <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="n">obs_prime_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">obs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                <span class="n">clim</span><span class="p">[</span><span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                     <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="p">)</span>
+
+        <span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span>
+            <span class="n">fcst_prime</span> <span class="o">-</span> <span class="n">fcst_prime_avg</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">obs_prime</span> <span class="o">-</span> <span class="n">obs_prime_avg</span><span class="p">))</span>
+        <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">fcst_prime</span> <span class="o">-</span> <span class="n">fcst_prime_avg</span><span class="p">))</span> <span class="o">*</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">obs_prime</span> <span class="o">-</span> <span class="n">obs_prime_avg</span><span class="p">))</span>
+        <span class="n">cac</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">denominator</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cac</span></div>
+
+
+<div class="viewcode-block" id="get_rmse"><a class="viewcode-back" href="../sci.html#sci.get_rmse">[docs]</a><span class="k">def</span> <span class="nf">get_rmse</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">fcst</span><span class="p">,</span> <span class="n">idc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the root mean square error.</span>
+
+<span class="sd">    :param obs: (np.array) - observation</span>
+<span class="sd">    :param fcst: (np.array) - forecast</span>
+<span class="sd">    :param idc: (np.array) - indices of grid points</span>
+<span class="sd">    :return rmse: (np.array) - root mean square error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size_arr</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">len_arr</span> <span class="o">=</span> <span class="n">size_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">grid_points</span> <span class="o">=</span> <span class="n">size_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">size_arr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">len_arr</span><span class="p">)</span>
+
+    <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="n">idc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">idc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="n">idc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">idc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_arr</span><span class="p">):</span>
+        <span class="n">rmse</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">grid_points</span><span class="p">)</span> <span class="o">*</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span>
+                    <span class="n">fcst</span><span class="p">[</span>
+                        <span class="n">i</span><span class="p">,</span>
+                        <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="n">obs</span><span class="p">[</span>
+                        <span class="n">i</span><span class="p">,</span>
+                        <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                       <span class="p">)</span>
+                   <span class="p">)</span>
+             <span class="p">)</span>
+    <span class="k">return</span> <span class="n">rmse</span></div>
+
+
+<div class="viewcode-block" id="convert"><a class="viewcode-back" href="../sci.html#sci.convert">[docs]</a><span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span>
+            <span class="n">mm2in</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">c2f</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">c2k</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">f2k</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">mps2mph</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">km2mi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the variable from one unit to another.</span>
+
+<span class="sd">    :param variable: (np.array) - variable values</span>
+<span class="sd">    :param mm2in: (boolean) - millimeters to inches</span>
+<span class="sd">    :param c2f: (boolean) - Celsius to Fahrenheit</span>
+<span class="sd">    :param c2k: (boolean) - Celsius to Kelvin</span>
+<span class="sd">    :param f2k: (boolean) - Fahrenheit to Kelvin</span>
+<span class="sd">    :param mps2mph: (boolean) - meters per second to miles per hour</span>
+<span class="sd">    :param reverse: (boolean) - reverses the conversions (mm2in becomes in2mm)</span>
+<span class="sd">    :return conv_var: (np.array) - converted variable values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">np_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">reverse</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mm2in</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np_var</span> <span class="o">/</span> <span class="mf">25.4</span>
+        <span class="k">elif</span> <span class="n">c2f</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np_var</span> <span class="o">*</span> <span class="mf">1.8</span> <span class="o">+</span> <span class="mi">32</span>
+        <span class="k">elif</span> <span class="n">c2k</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span> <span class="o">+</span> <span class="mf">273.15</span>
+        <span class="k">elif</span> <span class="n">f2k</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np_var</span> <span class="o">*</span> <span class="mf">1.8</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">+</span> <span class="mf">273.15</span>
+        <span class="k">elif</span> <span class="n">mps2mph</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np_var</span> <span class="o">/</span> <span class="mf">1609.344</span> <span class="o">*</span> <span class="mi">3600</span>
+        <span class="k">elif</span> <span class="n">km2mi</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np_var</span> <span class="o">*</span> <span class="mf">0.621371</span>
+    <span class="k">elif</span> <span class="n">reverse</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mm2in</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np_var</span> <span class="o">*</span> <span class="mf">25.4</span>
+        <span class="k">elif</span> <span class="n">c2f</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="p">(</span><span class="n">np_var</span> <span class="o">-</span> <span class="mi">32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.8</span>
+        <span class="k">elif</span> <span class="n">c2k</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span> <span class="o">-</span> <span class="mf">273.15</span>
+        <span class="k">elif</span> <span class="n">f2k</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="p">(</span><span class="n">np_var</span> <span class="o">-</span> <span class="mi">32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.8</span> <span class="o">-</span> <span class="mf">273.15</span>
+        <span class="k">elif</span> <span class="n">mps2mph</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np_var</span> <span class="o">*</span> <span class="mf">1609.344</span> <span class="o">/</span> <span class="mi">3600</span>
+        <span class="k">elif</span> <span class="n">km2mi</span><span class="p">:</span>
+            <span class="n">conv_var</span> <span class="o">=</span> <span class="n">np_var</span> <span class="o">/</span> <span class="mf">0.621371</span>
+    <span class="k">return</span> <span class="n">conv_var</span></div>
+
+
+<div class="viewcode-block" id="get_norm_anom"><a class="viewcode-back" href="../sci.html#sci.get_norm_anom">[docs]</a><span class="k">def</span> <span class="nf">get_norm_anom</span><span class="p">(</span><span class="n">data_avg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds the normalized anomaly of some averaged data.</span>
+
+<span class="sd">    :param data_avg: (np.ma.array) - average data values</span>
+<span class="sd">    :return data_anom: (arr) - normalized anomaly</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data_avg</span><span class="p">)</span>
+    <span class="n">data_clim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data_avg</span><span class="p">)</span>
+    <span class="n">data_anom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">data_avg</span><span class="p">)</span>
+    <span class="n">data_anom</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_avg</span> <span class="o">-</span> <span class="n">data_clim</span><span class="p">)</span> <span class="o">/</span> <span class="n">data_std</span>
+    <span class="k">return</span> <span class="n">data_anom</span></div>
+
+
+<div class="viewcode-block" id="get_anom"><a class="viewcode-back" href="../sci.html#sci.get_anom">[docs]</a><span class="k">def</span> <span class="nf">get_anom</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds the anomaly by taking the difference</span>
+<span class="sd">    between actual and mean.</span>
+
+<span class="sd">    :param data: (np.ma.array) - data values</span>
+<span class="sd">    :return data_anom: (arr) - anomaly</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_clim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">data_anom</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">data_clim</span>
+    <span class="k">return</span> <span class="n">data_anom</span></div>
+
+
+<div class="viewcode-block" id="get_norm"><a class="viewcode-back" href="../sci.html#sci.get_norm">[docs]</a><span class="k">def</span> <span class="nf">get_norm</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize the data to a range of 0 to 1</span>
+
+<span class="sd">    :param data: (arr) - data values</span>
+<span class="sd">    :return data_norm: (arr) - normalized data values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_avg"><a class="viewcode-back" href="../sci.html#sci.get_avg">[docs]</a><span class="k">def</span> <span class="nf">get_avg</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+            <span class="n">times_idc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">lats_idc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">lons_idc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">lvls_idc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">change_lvl_order</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds the areal and/or time average and/or level, but first,</span>
+<span class="sd">    data dimensions must be in these orders:</span>
+<span class="sd">    lat, lon;</span>
+<span class="sd">    time, lat, lon;</span>
+<span class="sd">    time, level, lat, lon OR time, lat, lon, level (if change_lvl_order).</span>
+
+<span class="sd">    :param data: (np.ma.array) - input data</span>
+<span class="sd">    :param axis: (tuple) - axis to average over</span>
+<span class="sd">    :param times_idc: (np.array) - time indices</span>
+<span class="sd">    :param lats_idc: (np.array) - latitude indices</span>
+<span class="sd">    :param lons_idc: (np.array) - longitude indices</span>
+<span class="sd">    :param lvls_idc: (float) - level indices</span>
+<span class="sd">    :param change_lvl_order: (boolean) - changes order of level dimension</span>
+<span class="sd">    :return avg: (np.ma.array) - average over given parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_shp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lats_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lons_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span>
+                               <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                               <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span>
+                               <span class="p">]),</span>
+                             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">times_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">time_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">time_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">time_start_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">time_end_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lats_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lons_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span>
+                               <span class="n">time_start_idc</span><span class="p">:</span><span class="n">time_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                               <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                               <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span>
+                               <span class="p">]),</span>
+                             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">change_lvl_order</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">times_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">time_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">time_start_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">time_end_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lats_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lons_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lvls_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lvl_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">lvl_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lvl_start_idc</span> <span class="o">=</span> <span class="n">lvls_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">lvl_end_idc</span> <span class="o">=</span> <span class="n">lvls_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span>
+                                   <span class="n">time_start_idc</span><span class="p">:</span><span class="n">time_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="n">lvl_start_idc</span><span class="p">:</span><span class="n">lvl_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="p">]),</span>
+                                 <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">times_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">time_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">time_start_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">time_end_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lvls_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lvl_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">lvl_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lvl_start_idc</span> <span class="o">=</span> <span class="n">lvls_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">lvl_end_idc</span> <span class="o">=</span> <span class="n">lvls_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lats_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lons_idc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">data_shp</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span>
+                                   <span class="n">time_start_idc</span><span class="p">:</span><span class="n">time_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="n">lvl_start_idc</span><span class="p">:</span><span class="n">lvl_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="n">lat_start_idc</span><span class="p">:</span><span class="n">lat_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="n">lon_start_idc</span><span class="p">:</span><span class="n">lon_end_idc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="p">]),</span>
+                                 <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_stats"><a class="viewcode-back" href="../sci.html#sci.get_stats">[docs]</a><span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_str</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get basic stats of an array.</span>
+
+<span class="sd">    :param data: (np.array) - array of data</span>
+<span class="sd">    :param show: (boolean) - whether to print out stats</span>
+<span class="sd">    :param return_str: (str) - indicator of to return vert, hori, or none str</span>
+<span class="sd">    :return vert_format: (str) - vertically formatted string</span>
+<span class="sd">    :return hori_format: (str) - horizontally formatted string</span>
+<span class="sd">    :return leng, mini, maxi, med, avg, std: (np.float64) - \</span>
+<span class="sd">        length, maximum, medium, average, standard deviation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">The get_stats data was temporarily converted to 1D.&#39;</span><span class="p">)</span>
+
+    <span class="n">leng</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">mini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">maxi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">med</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">len_str</span> <span class="o">=</span> <span class="s1">&#39;Len: </span><span class="si">{0:6}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">leng</span><span class="p">)</span>
+    <span class="n">avg_str</span> <span class="o">=</span> <span class="s1">&#39;Avg: </span><span class="si">{0:6.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">avg</span><span class="p">)</span>
+    <span class="n">med_str</span> <span class="o">=</span> <span class="s1">&#39;Med: </span><span class="si">{0:6.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">med</span><span class="p">)</span>
+    <span class="n">max_str</span> <span class="o">=</span> <span class="s1">&#39;Max: </span><span class="si">{0:6.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">maxi</span><span class="p">)</span>
+    <span class="n">min_str</span> <span class="o">=</span> <span class="s1">&#39;Min: </span><span class="si">{0:6.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mini</span><span class="p">)</span>
+    <span class="n">std_str</span> <span class="o">=</span> <span class="s1">&#39;Std: </span><span class="si">{0:6.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">std</span><span class="p">)</span>
+
+    <span class="n">hori_format</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{leng:12}</span><span class="s1">, &#39;</span> \
+        <span class="s1">&#39;</span><span class="si">{mini:12}</span><span class="s1">, &#39;</span> \
+        <span class="s1">&#39;</span><span class="si">{maxi:12}</span><span class="s1">, &#39;</span> \
+        <span class="s1">&#39;</span><span class="si">{med:12}</span><span class="s1">, &#39;</span> \
+        <span class="s1">&#39;</span><span class="si">{avg:12}</span><span class="s1">, &#39;</span> \
+        <span class="s1">&#39;</span><span class="si">{std:12}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">leng</span><span class="o">=</span><span class="n">len_str</span><span class="p">,</span>
+                            <span class="n">mini</span><span class="o">=</span><span class="n">min_str</span><span class="p">,</span>
+                            <span class="n">maxi</span><span class="o">=</span><span class="n">max_str</span><span class="p">,</span>
+                            <span class="n">med</span><span class="o">=</span><span class="n">med_str</span><span class="p">,</span>
+                            <span class="n">avg</span><span class="o">=</span><span class="n">avg_str</span><span class="p">,</span>
+                            <span class="n">std</span><span class="o">=</span><span class="n">std_str</span><span class="p">)</span>
+
+    <span class="n">vert_format</span> <span class="o">=</span> <span class="n">hori_format</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">hori_format</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;horizontal&#39;</span> <span class="ow">in</span> <span class="n">return_str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hori_format</span>
+    <span class="k">elif</span> <span class="s1">&#39;vertical&#39;</span> <span class="ow">in</span> <span class="n">return_str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">vert_format</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">leng</span><span class="p">,</span> <span class="n">mini</span><span class="p">,</span> <span class="n">maxi</span><span class="p">,</span> <span class="n">med</span><span class="p">,</span> <span class="n">avg</span><span class="p">,</span> <span class="n">std</span></div>
+
+
+<div class="viewcode-block" id="get_counts"><a class="viewcode-back" href="../sci.html#sci.get_counts">[docs]</a><span class="k">def</span> <span class="nf">get_counts</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_str</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get count distribution of data.</span>
+
+<span class="sd">    :param data: (np.array) - array of data</span>
+<span class="sd">    :param show: (boolean) - whether to print out distribution</span>
+<span class="sd">    :param return_str: (boolean) - whether to return formatted string</span>
+<span class="sd">    :return count_list: (list) - list of count names and values</span>
+<span class="sd">    :return formatted: (str) - optional formatted string of count list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">count_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">count_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;total&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)))</span>
+
+    <span class="n">formatted_str</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">count_list</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">formalize_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">count_val</span> <span class="o">=</span> <span class="n">count</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">formatted</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1">: </span><span class="si">{count}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count_val</span><span class="p">))</span>
+            <span class="n">formatted_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>
+
+    <span class="n">formatted_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formatted_str</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">count_list</span><span class="p">,</span> <span class="n">formatted_str</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">count_list</span></div>
+
+
+<div class="viewcode-block" id="get_corr"><a class="viewcode-back" href="../sci.html#sci.get_corr">[docs]</a><span class="k">def</span> <span class="nf">get_corr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the Pearson&#39;s correlation coefficient and two tailed p-value.</span>
+
+<span class="sd">    :param x: (scalar/arr) - values</span>
+<span class="sd">    :param y: (scalar/arr) - values</span>
+<span class="sd">    :return corr, pval: (scalar, scalar) - correlation coefficient, p-value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cosd"><a class="viewcode-back" href="../sci.html#sci.cosd">[docs]</a><span class="k">def</span> <span class="nf">cosd</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cosine function evaluating values in degrees.</span>
+
+<span class="sd">    :param x: (scalar/arr) - values</span>
+<span class="sd">    :return: (scalar/arr) - cosine of the values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="sind"><a class="viewcode-back" href="../sci.html#sci.sind">[docs]</a><span class="k">def</span> <span class="nf">sind</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sine function evaluating values in degrees.</span>
+
+<span class="sd">    :param x: (scalar/arr) - values</span>
+<span class="sd">    :return: (scalar/arr) - sine of the values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="tand"><a class="viewcode-back" href="../sci.html#sci.tand">[docs]</a><span class="k">def</span> <span class="nf">tand</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tangent function evaluating values in degrees.</span>
+
+<span class="sd">    :param x: (scalar/arr) - values</span>
+<span class="sd">    :return: (scalar/arr) - tangent of the values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="asind"><a class="viewcode-back" href="../sci.html#sci.asind">[docs]</a><span class="k">def</span> <span class="nf">asind</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Arc sine function returning degrees.</span>
+
+<span class="sd">    :param x: (scalar/arr) - values</span>
+<span class="sd">    :return: (scalar/arr) - arc sine of the values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="acosd"><a class="viewcode-back" href="../sci.html#sci.acosd">[docs]</a><span class="k">def</span> <span class="nf">acosd</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Arc cosine function returning degrees.</span>
+
+<span class="sd">    :param x: (scalar/arr) - values</span>
+<span class="sd">    :return: (scalar/arr) - arc cosine of the values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="atand"><a class="viewcode-back" href="../sci.html#sci.atand">[docs]</a><span class="k">def</span> <span class="nf">atand</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Arc tangent function returning degrees.</span>
+
+<span class="sd">    :param x: (scalar/arr) - values</span>
+<span class="sd">    :return: (scalar/arr) - arc tangent of the values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_c"><a class="viewcode-back" href="../sci.html#sci.get_c">[docs]</a><span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get c in the Pythagorean theorem.</span>
+
+<span class="sd">    :param a: (scalar) - value</span>
+<span class="sd">    :param b: (scalar) - value</span>
+<span class="sd">    :return c: (scalar) - value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_terc_avg"><a class="viewcode-back" href="../sci.html#sci.get_terc_avg">[docs]</a><span class="k">def</span> <span class="nf">get_terc_avg</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get rolling seasonal terciles</span>
+
+<span class="sd">    :param a: (scalar) - value</span>
+<span class="sd">    :param b: (scalar) - value</span>
+<span class="sd">    :return c: (scalar) - value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">dim_0</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">values</span></div>
+
+
+<div class="viewcode-block" id="get_regression"><a class="viewcode-back" href="../sci.html#sci.get_regression">[docs]</a><span class="k">def</span> <span class="nf">get_regression</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper of np.polyfit to create regressions</span>
+
+<span class="sd">    :param x: (arr) - x values</span>
+<span class="sd">    :param y: (arr) - y values</span>
+<span class="sd">    :param deg: (int) - degree of fitting polynomial</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">pfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">deg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">pfit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

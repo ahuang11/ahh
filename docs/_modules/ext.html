@@ -1,0 +1,982 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ext &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>ext</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for ext</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">itemgetter</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">glob</span> <span class="k">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">linecache</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;huang.andrew12@gmail.com&#39;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Andrew Huang&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">EmptyGlob</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">MismatchGlob</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="n">MISC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;months_initial&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;months_short&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Jan&#39;</span><span class="p">,</span> <span class="s1">&#39;Feb&#39;</span><span class="p">,</span> <span class="s1">&#39;Mar&#39;</span><span class="p">,</span> <span class="s1">&#39;Apr&#39;</span><span class="p">,</span> <span class="s1">&#39;May&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;Jun&#39;</span><span class="p">,</span> <span class="s1">&#39;Jul&#39;</span><span class="p">,</span> <span class="s1">&#39;Aug&#39;</span><span class="p">,</span> <span class="s1">&#39;Sep&#39;</span><span class="p">,</span> <span class="s1">&#39;Oct&#39;</span><span class="p">,</span> <span class="s1">&#39;Nov&#39;</span><span class="p">,</span> <span class="s1">&#39;Dec&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;months_long&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;January&#39;</span><span class="p">,</span> <span class="s1">&#39;February&#39;</span><span class="p">,</span> <span class="s1">&#39;March&#39;</span><span class="p">,</span> <span class="s1">&#39;April&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;May&#39;</span><span class="p">,</span> <span class="s1">&#39;June&#39;</span><span class="p">,</span> <span class="s1">&#39;July&#39;</span><span class="p">,</span> <span class="s1">&#39;August&#39;</span><span class="p">,</span> <span class="s1">&#39;September&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;October&#39;</span><span class="p">,</span> <span class="s1">&#39;November&#39;</span><span class="p">,</span> <span class="s1">&#39;Dececember&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;weekdays_initial&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;Th&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;Sa&#39;</span><span class="p">,</span> <span class="s1">&#39;Su&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;weekdays_short&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Mon&#39;</span><span class="p">,</span> <span class="s1">&#39;Tue&#39;</span><span class="p">,</span> <span class="s1">&#39;Wed&#39;</span><span class="p">,</span> <span class="s1">&#39;Thu&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;Fri&#39;</span><span class="p">,</span> <span class="s1">&#39;Sat&#39;</span><span class="p">,</span> <span class="s1">&#39;Sun&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;weekdays_long&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Monday&#39;</span><span class="p">,</span> <span class="s1">&#39;Tuesday&#39;</span><span class="p">,</span> <span class="s1">&#39;Wednesday&#39;</span><span class="p">,</span> <span class="s1">&#39;Thursday&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Friday&#39;</span><span class="p">,</span> <span class="s1">&#39;Saturday&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunday&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;alphabet&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;alphabet_cap&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;days_per_month&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">31</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">],</span>
+        <span class="s1">&#39;days_per_month_leap&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">31</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span>
+                                <span class="mi">31</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">],</span>
+        <span class="p">}</span>
+
+
+<div class="viewcode-block" id="ahh"><a class="viewcode-back" href="../ext.html#ext.ahh">[docs]</a><span class="k">def</span> <span class="nf">ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">n</span><span class="o">=</span><span class="s1">&#39;ahh&#39;</span><span class="p">,</span>
+        <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+        <span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">edgeitems</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">snippet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">fillval_high</span><span class="o">=</span><span class="mf">99999.</span><span class="p">,</span>
+        <span class="n">fillval_low</span><span class="o">=-</span><span class="mf">99999.</span><span class="p">,</span>
+        <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">stop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">named_vars</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper of one_ahh(); explores a variable.</span>
+
+<span class="sd">    :param variable: (array) - variable to be evaluated</span>
+<span class="sd">    :param n: (str) - name of variable</span>
+<span class="sd">    :param ignore: (scalar/str) - a value/str to ignore</span>
+<span class="sd">    :param col: (str) - if dataframe, name of column</span>
+<span class="sd">    :param time: (integer) - index of time to print in snippet</span>
+<span class="sd">    :param level: (integer) - index of time to print in snippet</span>
+<span class="sd">    :param center: (int) - if not 0, the number*2 to print around the center</span>
+<span class="sd">    :param offset: (int) - count of indices offset from the center</span>
+<span class="sd">    :param threshold: (int) - count before abbrieviating the print</span>
+<span class="sd">    :param precision: (int) - number of decimal places</span>
+<span class="sd">    :param edgeitems: (int) - how many numbers to print on the edge</span>
+<span class="sd">    :param suppress: (boolean) - whether to suppress scientific notation</span>
+<span class="sd">    :param snippet: (boolean) - whether to exclude snippet of values</span>
+<span class="sd">    :param fillval_high: (float) - anything equal/greater than fill value will</span>
+<span class="sd">                              not be included in the max</span>
+<span class="sd">    :param fillval_low: (float) - anything equal/less than fill value will</span>
+<span class="sd">                          not be included in the min</span>
+<span class="sd">    :param named_vars: (args) - named variables to be evaluated (fills in n)</span>
+<span class="sd">    :param quiet: (boolean) - whether to show snippet/center values</span>
+<span class="sd">    :param stop: (boolean) - whether to stop the ahh-ing in a loop</span>
+<span class="sd">    :return stop: (boolean) - stop the ahh-ing in a loop</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ignore&#39;</span><span class="p">:</span> <span class="n">ignore</span><span class="p">,</span> <span class="s1">&#39;col&#39;</span><span class="p">:</span> <span class="n">col</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">level</span><span class="p">,</span>
+              <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="n">center</span><span class="p">,</span> <span class="s1">&#39;offset&#39;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="n">threshold</span><span class="p">,</span>
+              <span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span> <span class="s1">&#39;edgeitems&#39;</span><span class="p">:</span> <span class="n">edgeitems</span><span class="p">,</span>
+              <span class="s1">&#39;suppress&#39;</span><span class="p">:</span> <span class="n">suppress</span><span class="p">,</span> <span class="s1">&#39;snippet&#39;</span><span class="p">:</span> <span class="n">snippet</span><span class="p">,</span>
+              <span class="s1">&#39;fillval_high&#39;</span><span class="p">:</span> <span class="n">fillval_high</span><span class="p">,</span> <span class="s1">&#39;fillval_low&#39;</span><span class="p">:</span> <span class="n">fillval_low</span><span class="p">,</span>
+              <span class="s1">&#39;quiet&#39;</span><span class="p">:</span> <span class="n">quiet</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">:</span> <span class="n">stop</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">stop</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">xr_variables</span> <span class="o">=</span> <span class="n">ahh_xr_check</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">variable</span> <span class="o">=</span> <span class="n">xr_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s1">&#39;ahh&#39;</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">xr_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">xr_variable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s1">&#39;ahh&#39;</span><span class="p">:</span>
+                        <span class="n">n</span> <span class="o">=</span> <span class="n">xr_variable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">xr_variable</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">named_vars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">xr_variables</span> <span class="o">=</span> <span class="n">ahh_xr_check</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">item</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">variable</span> <span class="o">=</span> <span class="n">xr_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s1">&#39;ahh&#39;</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">xr_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">xr_variable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s1">&#39;ahh&#39;</span><span class="p">:</span>
+                        <span class="n">n</span> <span class="o">=</span> <span class="n">xr_variable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">xr_variable</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ahhh"><a class="viewcode-back" href="../ext.html#ext.ahhh">[docs]</a><span class="k">def</span> <span class="nf">ahhh</span><span class="p">(</span><span class="o">*</span><span class="n">variables</span><span class="p">,</span> <span class="o">**</span><span class="n">named_vars</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The lite version of ahh; pass as many variables to this,</span>
+<span class="sd">    but no settings to change</span>
+
+<span class="sd">    :param named_vars: (args) - variables to be evaluated</span>
+<span class="sd">    :return stop: (boolean) - stop the ahh-ing in a loop</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="s1">&#39;ahh&#39;</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+        <span class="n">xr_variables</span> <span class="o">=</span> <span class="n">ahh_xr_check</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">xr_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s1">&#39;ahh&#39;</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">xr_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">xr_variable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s1">&#39;ahh&#39;</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">xr_variable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">xr_variable</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">named_vars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">xr_variables</span> <span class="o">=</span> <span class="n">ahh_xr_check</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">item</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">xr_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s1">&#39;ahh&#39;</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">xr_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">xr_variable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xr_variables</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s1">&#39;ahh&#39;</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">xr_variable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">xr_variable</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="one_ahh"><a class="viewcode-back" href="../ext.html#ext.one_ahh">[docs]</a><span class="k">def</span> <span class="nf">one_ahh</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span>
+            <span class="n">n</span><span class="o">=</span><span class="s1">&#39;ahh&#39;</span><span class="p">,</span>
+            <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">threshold</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+            <span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">edgeitems</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">snippet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">fillval_high</span><span class="o">=</span><span class="mf">99999.</span><span class="p">,</span>
+            <span class="n">fillval_low</span><span class="o">=-</span><span class="mf">99999.</span><span class="p">,</span>
+            <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">stop</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Explores type, unnested type, length, and shape of a variable.</span>
+<span class="sd">    Can optionally include a name to differentiate from other &#39;ahh&#39;s.</span>
+
+<span class="sd">    :param variable: (array) - variable to be evaluated</span>
+<span class="sd">    :param n: (str) - name of variable</span>
+<span class="sd">    :param ignore: (scalar/str) - a value/str to ignore</span>
+<span class="sd">    :param col: (str) - if dataframe, name of column</span>
+<span class="sd">    :param time: (integer) - index of time to print in snippet</span>
+<span class="sd">    :param level: (integer) - index of time to print in snippet</span>
+<span class="sd">    :param center: (int) - if not 0, the number*2 to print around the center</span>
+<span class="sd">    :param offset: (int) - count of indices offset from the center</span>
+<span class="sd">    :param threshold: (int) - count before abbrieviating the print</span>
+<span class="sd">    :param precision: (int) - number of decimal places</span>
+<span class="sd">    :param edgeitems: (int) - how many numbers to print on the edge</span>
+<span class="sd">    :param suppress: (boolean) - whether to suppress scientific notation</span>
+<span class="sd">    :param snippet: (boolean) - whether to exclude snippet of values</span>
+<span class="sd">    :param fillval_high: (float) - anything equal/greater than fill value will</span>
+<span class="sd">                              not be included in the max</span>
+<span class="sd">    :param fillval_low: (float) - anything equal/less than fill value will</span>
+<span class="sd">                          not be included in the min</span>
+<span class="sd">    :param quiet: (boolean) - whether to show snippet/center values</span>
+<span class="sd">    :param stop: (boolean) - whether to stop the ahh-ing in a loop</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">stop</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">):</span>
+                <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+            <span class="n">type_of_var2</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">shape_of_var</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">len_shape_of_var</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">max_of_var</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">min_of_var</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">col_names</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">type_of_var</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ignore</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">variable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">variable</span> <span class="o">==</span> <span class="n">ignore</span><span class="p">,</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">len_of_var</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+                <span class="n">center_of_var</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">len_of_var</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">center_of_var</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">shape_of_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">len_shape_of_var</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_of_var</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">type_of_var2</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">type_of_var2</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">type_of_var2</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">type_of_var2</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">type_of_var2</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">center_lat_of_var</span> <span class="o">=</span> <span class="n">shape_of_var</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+                    <span class="n">center_lon_of_var</span> <span class="o">=</span> <span class="n">shape_of_var</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">center_lat_of_var</span> <span class="o">=</span> <span class="n">shape_of_var</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+                    <span class="n">center_lon_of_var</span> <span class="o">=</span> <span class="n">shape_of_var</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="n">center_lat_of_var</span> <span class="o">=</span> <span class="n">shape_of_var</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+                    <span class="n">center_lon_of_var</span> <span class="o">=</span> <span class="n">shape_of_var</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">center_lat_of_var</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">center_lon_of_var</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">nanmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
+                <span class="n">variable_ravel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="n">nanmask</span><span class="p">])</span>
+                <span class="n">fillval_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                                      <span class="p">(</span><span class="n">variable_ravel</span> <span class="o">&lt;</span> <span class="n">fillval_high</span><span class="p">)</span> <span class="o">&amp;</span>
+                                      <span class="p">(</span><span class="n">variable_ravel</span> <span class="o">&gt;</span> <span class="n">fillval_low</span><span class="p">)</span>
+                                      <span class="p">)</span>
+                <span class="n">variable_clean</span> <span class="o">=</span> <span class="n">variable_ravel</span><span class="p">[</span><span class="n">fillval_idc</span><span class="p">]</span>
+                <span class="n">max_of_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">variable_clean</span><span class="p">)</span>
+                <span class="n">min_of_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">variable_clean</span><span class="p">)</span>
+                <span class="n">avg_of_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">variable_clean</span><span class="p">)</span>
+                <span class="n">med_of_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">variable_clean</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">report_err</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to get the max/min values!&#39;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">col_names</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">columns</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span>
+                               <span class="n">suppress</span><span class="o">=</span><span class="n">suppress</span><span class="p">,</span>
+                               <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+                               <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">,</span>
+                               <span class="n">edgeitems</span><span class="o">=</span><span class="n">edgeitems</span>
+                               <span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;            Name: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;          Length: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">len_of_var</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      Dimensions: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape_of_var</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   Unnested Type: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">type_of_var2</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Overarching Type: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">type_of_var</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Minimum, Maximum: </span><span class="si">{0:.3f}</span><span class="s1">, </span><span class="si">{1:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_of_var</span><span class="p">,</span>
+                                                              <span class="n">max_of_var</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; Average, Median: </span><span class="si">{0:.3f}</span><span class="s1">, </span><span class="si">{1:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">avg_of_var</span><span class="p">,</span>
+                                                              <span class="n">med_of_var</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">col_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Column names:&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col_names</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">snippet</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Snippet of values:&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">col_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">edgeitems</span><span class="p">))</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                            <span class="k">pass</span>
+                    <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[:,</span> <span class="p">:][</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="n">time</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:][</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="n">time</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:][</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">len_of_var</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">if</span> <span class="n">center</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Center lat indice </span><span class="si">{lat}</span><span class="s1">, lon indice </span><span class="si">{lon}</span><span class="s1">:&#39;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="n">center_lat_of_var</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span>
+                                          <span class="n">lon</span><span class="o">=</span><span class="n">center_lon_of_var</span> <span class="o">+</span> <span class="n">offset</span>
+                                          <span class="p">)</span>
+                                  <span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lat_of_var</span> <span class="o">-</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">):</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lat_of_var</span> <span class="o">+</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lon_of_var</span> <span class="o">-</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">):</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lon_of_var</span> <span class="o">+</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span>
+                                           <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                                  <span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Center lat indice </span><span class="si">{lat}</span><span class="s1">, lon indice </span><span class="si">{lon}</span><span class="s1">:&#39;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="n">center_lat_of_var</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span>
+                                          <span class="n">lon</span><span class="o">=</span><span class="n">center_lon_of_var</span> <span class="o">+</span> <span class="n">offset</span>
+                                          <span class="p">)</span>
+                                  <span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span>
+                                           <span class="n">time</span><span class="p">,</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lat_of_var</span> <span class="o">-</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">):</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lat_of_var</span> <span class="o">+</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lon_of_var</span> <span class="o">-</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">):</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lon_of_var</span> <span class="o">+</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span>
+                                           <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                                  <span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">len_shape_of_var</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Center lat indice </span><span class="si">{lat}</span><span class="s1">, lon indice </span><span class="si">{lon}</span><span class="s1">:&#39;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="n">center_lat_of_var</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span>
+                                          <span class="n">lon</span><span class="o">=</span><span class="n">center_lon_of_var</span> <span class="o">+</span> <span class="n">offset</span>
+                                          <span class="p">)</span>
+                                  <span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span>
+                                           <span class="n">time</span><span class="p">,</span>
+                                           <span class="n">level</span><span class="p">,</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lat_of_var</span> <span class="o">-</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">):</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lat_of_var</span> <span class="o">+</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lon_of_var</span> <span class="o">-</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">):</span>
+                                           <span class="nb">int</span><span class="p">(</span><span class="n">center_lon_of_var</span> <span class="o">+</span>
+                                               <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">),</span>
+                                           <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                                  <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Center indice </span><span class="si">{}</span><span class="s1">:&#39;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">center_of_var</span> <span class="o">+</span> <span class="n">offset</span><span class="p">))</span>
+                            <span class="n">start_slice</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">center_of_var</span> <span class="o">-</span> <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+                            <span class="n">end_slice</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">center_of_var</span> <span class="o">+</span> <span class="n">center</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+                            <span class="n">center_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start_slice</span><span class="p">,</span> <span class="n">end_slice</span><span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="n">center_slice</span><span class="p">]</span>
+                                  <span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to get center of variable!&#39;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Unable to ahh due to this:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ahh_xr_check"><a class="viewcode-back" href="../ext.html#ext.ahh_xr_check">[docs]</a><span class="k">def</span> <span class="nf">ahh_xr_check</span><span class="p">(</span><span class="n">variable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if variable is xarray; if so, return list of names and items</span>
+
+<span class="sd">    :param variable: (array) - variable to be evaluated</span>
+<span class="sd">    :return varlist: (list) - list of tuples of variable name and values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+        <span class="n">variable_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">var_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">var_names</span><span class="p">:</span>
+            <span class="n">variable_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">var_names</span><span class="p">,</span> <span class="n">variable_list</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">variable</span><span class="o">.</span><span class="n">values</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="p"><a class="viewcode-back" href="../ext.html#ext.p">[docs]</a><span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints a noticeable mark in the terminal to help debug.</span>
+
+<span class="sd">    :param num: (int) - number to differentiate your markers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">######## MARK </span><span class="si">{}</span><span class="s1"> ########</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="lonw2e"><a class="viewcode-back" href="../ext.html#ext.lonw2e">[docs]</a><span class="k">def</span> <span class="nf">lonw2e</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a west longitude to east longitude, can also do in reverse.</span>
+
+<span class="sd">    :param lon: (int) - a west longitude</span>
+<span class="sd">    :param reverse: (boolean) - indicator whether input is an array</span>
+<span class="sd">    :param array: (boolean) - indicator whether to go the other direction</span>
+<span class="sd">    :return translated_lon: (int) - translated longitude</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">reverse</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">translated_lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+            <span class="n">west_lon_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">translated_lon</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">translated_lon</span><span class="p">[</span><span class="n">west_lon_idc</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">360</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lon</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">translated_lon</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">+</span> <span class="n">lon</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Input lon, </span><span class="si">{}</span><span class="s1">, is already in east coordinates!&#39;</span>
+                      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">translated_lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+            <span class="n">west_lon_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">translated_lon</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">)</span>
+            <span class="n">translated_lon</span><span class="p">[</span><span class="n">west_lon_idc</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">360</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lon</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+                <span class="n">translated_lon</span> <span class="o">=</span> <span class="n">lon</span> <span class="o">-</span> <span class="mi">360</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Input lon, </span><span class="si">{}</span><span class="s1">, is already in east coordinates!&#39;</span>
+                      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">translated_lon</span></div>
+
+
+<div class="viewcode-block" id="get_idc"><a class="viewcode-back" href="../ext.html#ext.get_idc">[docs]</a><span class="k">def</span> <span class="nf">get_idc</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span>
+            <span class="n">lons</span><span class="p">,</span>
+            <span class="n">lower_lat</span><span class="p">,</span>
+            <span class="n">upper_lat</span><span class="p">,</span>
+            <span class="n">left_lon</span><span class="p">,</span>
+            <span class="n">right_lon</span><span class="p">,</span>
+            <span class="n">maxmin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">w2e</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">e2w</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds the indices for given latitudes and longitudes boundary.</span>
+
+<span class="sd">    :param lats: (np.array) - array of latitudes</span>
+<span class="sd">    :param lons: (np.array) - array of longitudes</span>
+<span class="sd">    :param lower_lat: (float) - southern latitude boundary</span>
+<span class="sd">    :param upper_lat: (float) - northern latitude boundary</span>
+<span class="sd">    :param left_lon: (float) - western longitude boundary</span>
+<span class="sd">    :param right_lon: (float) - eastern longitude boundary</span>
+<span class="sd">    :param maxmin: (boolean) - return only the max and min of lat/lon idc</span>
+<span class="sd">    :param w2e: (boolean) - convert input west longitudes to east longitudes</span>
+<span class="sd">    :param e2w: (boolean) - convert input east longitudes to west longitudes</span>
+<span class="sd">    :return lats_idc, lons_idc: (np.array, np.array) - indices of lats/lons</span>
+<span class="sd">    :return lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc: \</span>
+<span class="sd">             (np.int64, np.int64, np.int64, np.int64) \</span>
+<span class="sd">             the lowest and highest lat/lon indices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lats</span><span class="p">)</span>
+    <span class="n">lons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lons</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">w2e</span><span class="p">:</span>
+        <span class="n">left_lon</span> <span class="o">=</span> <span class="n">lonw2e</span><span class="p">(</span><span class="n">left_lon</span><span class="p">)</span>
+        <span class="n">right_lon</span> <span class="o">=</span> <span class="n">lonw2e</span><span class="p">(</span><span class="n">right_lon</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">e2w</span><span class="p">:</span>
+        <span class="n">left_lon</span> <span class="o">=</span> <span class="n">lonw2e</span><span class="p">(</span><span class="n">left_lon</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">right_lon</span> <span class="o">=</span> <span class="n">lonw2e</span><span class="p">(</span><span class="n">right_lon</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">lats_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                         <span class="p">(</span><span class="n">lats</span> <span class="o">&gt;=</span> <span class="n">lower_lat</span><span class="p">)</span>
+                         <span class="o">&amp;</span>
+                         <span class="p">(</span><span class="n">lats</span> <span class="o">&lt;=</span> <span class="n">upper_lat</span><span class="p">)</span>
+                         <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">right_lon</span> <span class="o">&lt;</span> <span class="n">left_lon</span><span class="p">:</span>
+        <span class="n">lons_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                             <span class="p">(</span><span class="n">lons</span> <span class="o">&gt;=</span> <span class="n">right_lon</span><span class="p">)</span>
+                             <span class="o">&amp;</span>
+                             <span class="p">(</span><span class="n">lons</span> <span class="o">&lt;=</span> <span class="n">left_lon</span><span class="p">)</span>
+                             <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lons_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                             <span class="p">(</span><span class="n">lons</span> <span class="o">&gt;=</span> <span class="n">left_lon</span><span class="p">)</span>
+                             <span class="o">&amp;</span>
+                             <span class="p">(</span><span class="n">lons</span> <span class="o">&lt;=</span> <span class="n">right_lon</span><span class="p">)</span>
+                             <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Input right_lon &lt; left_lon! Their positions are auto swapped!&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lats_idc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to find any lat indices within the range!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lons_idc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to find any lon indices within the range!&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Perhaps convert west longitudes to east, or vice versa?&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">maxmin</span><span class="p">:</span>
+        <span class="n">lats_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">lats_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">lons_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">lons_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">lat_start_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lat_end_idc</span> <span class="o">=</span> <span class="n">lats_idc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">lon_start_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lon_end_idc</span> <span class="o">=</span> <span class="n">lons_idc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">lat_start_idc</span><span class="p">,</span> <span class="n">lat_end_idc</span><span class="p">,</span> <span class="n">lon_start_idc</span><span class="p">,</span> <span class="n">lon_end_idc</span>
+
+    <span class="k">return</span> <span class="n">lats_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lons_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_lvls_idc"><a class="viewcode-back" href="../ext.html#ext.get_lvls_idc">[docs]</a><span class="k">def</span> <span class="nf">get_lvls_idc</span><span class="p">(</span><span class="n">lvls</span><span class="p">,</span> <span class="n">lower_lvl</span><span class="p">,</span> <span class="n">upper_lvl</span><span class="p">,</span> <span class="n">maxmin</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds the levels indices for given lower and upper boundary.</span>
+
+<span class="sd">    :param lvls: (np.array) - array of levels</span>
+<span class="sd">    :param lower_lvl: (float) - lower level boundary</span>
+<span class="sd">    :param upper_lvl: (float) - upper level boundary</span>
+<span class="sd">    :param maxmin: (boolean) - return only the max and min of level idc</span>
+<span class="sd">    :return lvls_idc: (np.array) - indices of levels</span>
+<span class="sd">    :return lvl_start_idc, lvl_end_idc: - (np.int64, np.int64) \</span>
+<span class="sd">             the lowest and highest level indices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lvls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lvls</span><span class="p">)</span>
+
+    <span class="n">lvls_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                         <span class="p">(</span><span class="n">lvls</span> <span class="o">&gt;=</span> <span class="n">lower_lvl</span><span class="p">)</span>
+                         <span class="o">&amp;</span>
+                         <span class="p">(</span><span class="n">lvls</span> <span class="o">&lt;=</span> <span class="n">upper_lvl</span><span class="p">)</span>
+                         <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lvls_idc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to find any lat indices within the range!&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">maxmin</span><span class="p">:</span>
+        <span class="n">lvls_idc</span> <span class="o">=</span> <span class="n">lvls_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">lvls_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">lvl_start_idc</span> <span class="o">=</span> <span class="n">lvls_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lvl_end_idc</span> <span class="o">=</span> <span class="n">lvls_idc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">lvl_start_idc</span><span class="p">,</span> <span class="n">lvl_end_idc</span>
+
+    <span class="k">return</span> <span class="n">lvls_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_times_idc"><a class="viewcode-back" href="../ext.html#ext.get_times_idc">[docs]</a><span class="k">def</span> <span class="nf">get_times_idc</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">start_yr</span><span class="p">,</span> <span class="n">end_yr</span><span class="p">,</span>
+                  <span class="n">start_mth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end_mth</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+                  <span class="n">start_day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end_day</span><span class="o">=</span><span class="mi">31</span><span class="p">,</span>
+                  <span class="n">maxmin</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds the times indices for given start time and end time.</span>
+
+<span class="sd">    :param times: (np.array) - array of datetimes</span>
+<span class="sd">    :param start_yr: (int) - lower year boundary</span>
+<span class="sd">    :param end_yr: (int) - upper year boundary</span>
+<span class="sd">    :param start_mth: (int) - lower month boundary</span>
+<span class="sd">    :param end_mth: (int) - upper month boundary</span>
+<span class="sd">    :param start_day: (int) - lower day boundary</span>
+<span class="sd">    :param end_day: (int) - upper day boundary</span>
+<span class="sd">    :param maxmin: (boolean) - return only the max and min of time idc</span>
+<span class="sd">    :return times_idc: (np.array) - indices of times</span>
+<span class="sd">    :return time_start_idc, time_end_idc: (np.int64, np.int64) - \</span>
+<span class="sd">            the lowest and highest time indices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start_dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">start_yr</span><span class="p">,</span> <span class="n">start_mth</span><span class="p">,</span> <span class="n">start_day</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">end_dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">end_yr</span><span class="p">,</span> <span class="n">end_mth</span><span class="p">,</span> <span class="n">end_day</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">end_day</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to create end datetime due to this error</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span>
+                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Changing end day to </span><span class="si">{}</span><span class="s1">!&#39;</span>
+                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_day</span><span class="p">))</span>
+
+    <span class="n">times_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                         <span class="p">(</span><span class="n">times</span> <span class="o">&gt;=</span> <span class="n">start_dt</span><span class="p">)</span>
+                         <span class="o">&amp;</span>
+                         <span class="p">(</span><span class="n">times</span> <span class="o">&lt;=</span> <span class="n">end_dt</span><span class="p">)</span>
+                         <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">times_idc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to find any times indices within the range!&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">maxmin</span><span class="p">:</span>
+        <span class="n">times_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">times_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">time_start_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">time_end_idc</span> <span class="o">=</span> <span class="n">times_idc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">time_start_idc</span><span class="p">,</span> <span class="n">time_end_idc</span>
+
+    <span class="k">return</span> <span class="n">times_idc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_closest"><a class="viewcode-back" href="../ext.html#ext.get_closest">[docs]</a><span class="k">def</span> <span class="nf">get_closest</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target_val</span><span class="p">,</span> <span class="n">type_var</span><span class="o">=</span><span class="s1">&#39;typical&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the closest value and index to target value.</span>
+
+<span class="sd">    :param data: (np.array) - data</span>
+<span class="sd">    :param target_val: (float/datetime.datetime) - target value</span>
+<span class="sd">    :param type_var: (str) - typical (float) or datetime (datetime.datetime)</span>
+<span class="sd">    :return closest_val, closest_val_idc: (datetime.datetime/float, int) -</span>
+<span class="sd">             the closest value to target value and the index of that</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">type_var</span> <span class="o">==</span> <span class="s1">&#39;typical&#39;</span><span class="p">:</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">target_val</span><span class="p">)</span>
+        <span class="n">closest_val_idc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">diff</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">closest_val_idc</span><span class="p">],</span> <span class="n">closest_val_idc</span>
+    <span class="k">if</span> <span class="n">type_var</span> <span class="o">==</span> <span class="s1">&#39;datetime&#39;</span><span class="p">:</span>
+        <span class="n">closest_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="n">target_val</span><span class="p">))</span>
+        <span class="n">closest_val_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="n">closest_val</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">closest_val_idc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">closest_val_idc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="n">closest_val</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">closest_val</span><span class="p">,</span> <span class="n">closest_val_idc</span></div>
+
+
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../ext.html#ext.flatten">[docs]</a><span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">nested_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flatten a nested list.</span>
+
+<span class="sd">    :param nested_list: (list) - list of lists</span>
+<span class="sd">    :return flattened_list: (list) - flattened list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">nested_list</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="formalize_str"><a class="viewcode-back" href="../ext.html#ext.formalize_str">[docs]</a><span class="k">def</span> <span class="nf">formalize_str</span><span class="p">(</span><span class="n">input_str</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Capitalize string by word and remove underscores.</span>
+
+<span class="sd">    :param input_str: (str) - string to replace underscores and title</span>
+<span class="sd">    :param suffix: (str) - suffix in string to be removed</span>
+<span class="sd">    :return output_str: (str) - formalized string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+        <span class="n">input_str</span> <span class="o">=</span> <span class="n">input_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">output_str</span> <span class="o">=</span> <span class="n">input_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">output_str</span></div>
+
+
+<div class="viewcode-block" id="round_to"><a class="viewcode-back" href="../ext.html#ext.round_to">[docs]</a><span class="k">def</span> <span class="nf">round_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Round to nearest base with precision.</span>
+
+<span class="sd">    :param x: (scalar) - value to be rounded from</span>
+<span class="sd">    :param base: (scalar) - value to be rounded to</span>
+<span class="sd">    :param prec: (int) - number of decimal points</span>
+<span class="sd">    :return rounded_val: (scalar) - rounded value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">base</span> <span class="o">*</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">base</span><span class="p">),</span> <span class="n">prec</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to round to&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="get_order_mag"><a class="viewcode-back" href="../ext.html#ext.get_order_mag">[docs]</a><span class="k">def</span> <span class="nf">get_order_mag</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get order of magnitude of value.</span>
+
+<span class="sd">    :param x: (scalar) - value to extract order of magnitude from</span>
+<span class="sd">    :return order_mag: (scalar) - order of magnitude</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="c1"># print(&#39;Cannot get order of magnitude.&#39;)</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="round_to_nearest_mag"><a class="viewcode-back" href="../ext.html#ext.round_to_nearest_mag">[docs]</a><span class="k">def</span> <span class="nf">round_to_nearest_mag</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Round to nearest order of magnitude.</span>
+
+<span class="sd">    :param x: (scalar) - value to round to the nearest order of magnitude</span>
+<span class="sd">    :return rounded_val: (scalar) - rounded value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">order_mag</span> <span class="o">=</span> <span class="n">get_order_mag</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">5.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">round_to</span><span class="p">(</span><span class="n">order_mag</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to round to nearest magnitude&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="split_consec"><a class="viewcode-back" href="../ext.html#ext.split_consec">[docs]</a><span class="k">def</span> <span class="nf">split_consec</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Split into lists where values are no longer the same.</span>
+<span class="sd">    For example, x = [1, 1, 3, 2]</span>
+<span class="sd">    split_consec(x) == [array([1, 1]), array([3]), array([2])]</span>
+
+<span class="sd">    :param data: (arr) - array of data</span>
+<span class="sd">    :return: (list) - list of lists of consecutive same values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sleep"><a class="viewcode-back" href="../ext.html#ext.sleep">[docs]</a><span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper of time.sleep; awaits number of seconds input.</span>
+
+<span class="sd">    :param seconds: (int) - number of seconds to wait</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="glob"><a class="viewcode-back" href="../ext.html#ext.glob">[docs]</a><span class="k">def</span> <span class="nf">glob</span><span class="p">(</span><span class="n">glob_str</span><span class="p">,</span> <span class="n">nfiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mismatch</span><span class="o">=</span><span class="s1">&#39;warn&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return sorted glob list.</span>
+
+<span class="sd">    :param glob_str: (str) - filename wildcard</span>
+<span class="sd">    :param nfiles: (int) - number of expected files</span>
+<span class="sd">    :param mismatch: (str) - warn or raise error</span>
+<span class="sd">    :return glob_list: (list) - sorted list of filenames</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">glob_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">glob_str</span><span class="p">))</span>
+    <span class="n">glob_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">glob_list</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">glob_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EmptyGlob</span><span class="p">(</span><span class="s1">&#39;No files match </span><span class="si">{0}</span><span class="s1">!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">glob_str</span><span class="p">))</span>
+
+    <span class="n">mismatch_fmt</span> <span class="o">=</span> <span class="s1">&#39;Expected </span><span class="si">{0}</span><span class="s1"> files from </span><span class="si">{1}</span><span class="s1">, but got </span><span class="si">{2}</span><span class="s1"> files!&#39;</span>
+    <span class="k">if</span> <span class="n">nfiles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nfiles</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nfiles</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">glob_len</span> <span class="o">!=</span> <span class="n">nfiles</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mismatch</span> <span class="ow">is</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MismatchGlob</span><span class="p">(</span><span class="n">mismatch_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nfiles</span><span class="p">,</span>
+                                                       <span class="n">glob_str</span><span class="p">,</span>
+                                                       <span class="n">glob_len</span><span class="p">)</span>
+                                   <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">mismatch_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nfiles</span><span class="p">,</span>
+                                          <span class="n">glob_str</span><span class="p">,</span>
+                                          <span class="n">glob_len</span><span class="p">)</span>
+                      <span class="p">)</span>
+    <span class="k">return</span> <span class="n">glob_list</span></div>
+
+
+<div class="viewcode-block" id="parallelize"><a class="viewcode-back" href="../ext.html#ext.parallelize">[docs]</a><span class="k">def</span> <span class="nf">parallelize</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">alist</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">arg2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg4</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallelize a function over a list of items.</span>
+
+<span class="sd">    :param function: (function) - tasks to apply to list</span>
+<span class="sd">    :param alist: (list) - a list of items to parallelize</span>
+<span class="sd">    :param nthreads: (int) - number of threads to use</span>
+<span class="sd">    :param arg2: (any) - constant; repeated argument</span>
+<span class="sd">    :param arg3: (any) - constant; repeated argument</span>
+<span class="sd">    :param arg4: (any) - constant; repeated argument</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">arg4</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">alist</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">arg2</span><span class="p">),</span> <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">arg3</span><span class="p">),</span>
+                   <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">arg4</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">arg3</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">alist</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">arg2</span><span class="p">),</span> <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">arg3</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">arg2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">alist</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">arg2</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">alist</span>
+
+    <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">nthreads</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="report_err"><a class="viewcode-back" href="../ext.html#ext.report_err">[docs]</a><span class="k">def</span> <span class="nf">report_err</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param save: (str) - name of file to export error message to</span>
+<span class="sd">    :param comment: (str) - additional comments to append to error report</span>
+<span class="sd">    :param show: (boolean): whether to print report</span>
+<span class="sd">    :return tb: (str) - get a formatted traceback message</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dtnow_str</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%b </span><span class="si">%d</span><span class="s1"> %H:%MZ&#39;</span><span class="p">)</span>
+    <span class="n">exception_type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">traceback</span><span class="o">.</span><span class="n">tb_next</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">tb_next</span>
+
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">tb_frame</span>
+    <span class="n">lineno</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">tb_lineno</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_filename</span>
+    <span class="n">linecache</span><span class="o">.</span><span class="n">checkcache</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">linecache</span><span class="o">.</span><span class="n">getline</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">)</span>
+
+    <span class="n">error_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> - </span><span class="si">{2}</span><span class="s1"> on line </span><span class="si">{3}</span><span class="s1"> in </span><span class="si">{4}</span><span class="s1">: &quot;</span><span class="si">{5}</span><span class="s1">&quot;&#39;</span>
+    <span class="n">error_report</span> <span class="o">=</span> <span class="n">error_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dtnow_str</span><span class="p">,</span>
+                                    <span class="n">exception_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="p">,</span>
+                                    <span class="n">lineno</span><span class="p">,</span>
+                                    <span class="n">filename</span><span class="p">,</span>
+                                    <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                                    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error_report</span> <span class="o">+=</span> <span class="s1">&#39; - </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">error_report</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">save</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;.txt&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">save</span><span class="p">:</span>
+            <span class="n">save</span> <span class="o">+=</span> <span class="s1">&#39;.txt&#39;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">error_report</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="append_to_fn"><a class="viewcode-back" href="../ext.html#ext.append_to_fn">[docs]</a><span class="k">def</span> <span class="nf">append_to_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">append_str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Append string before the file ending</span>
+
+<span class="sd">    :param fn: (str) - filename</span>
+<span class="sd">    :param append_str: (str) - string to add to filename</span>
+<span class="sd">    :return new_fn: (str) - append string combined with filename</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fn_list</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">fn_list</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fn_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">append_str</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">fn_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fn_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="strip_2ws"><a class="viewcode-back" href="../ext.html#ext.strip_2ws">[docs]</a><span class="k">def</span> <span class="nf">strip_2ws</span><span class="p">(</span><span class="n">astr</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Strips double white spaces</span>
+
+<span class="sd">    :param astr: (str) - a string</span>
+<span class="sd">    :param strip: (boolean) - whether to strip whitespace on edges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">strip</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; +&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">astr</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; +&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">astr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_ocean_mask"><a class="viewcode-back" href="../ext.html#ext.get_ocean_mask">[docs]</a><span class="k">def</span> <span class="nf">get_ocean_mask</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span><span class="p">,</span>
+                   <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">apply_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CURRENTLY BROKEN IN NEWER VERSIONS!</span>
+<span class="sd">    Wrapper of basemap.maskoceans to mask either ocean or land</span>
+
+<span class="sd">    :param data: (array) - data to be masked</span>
+<span class="sd">    :param lats: (array) - array of latitudes</span>
+<span class="sd">    :param lons: (array) - array of longitudes</span>
+<span class="sd">    :param reverse: (boolean) - whether to mask land instead</span>
+<span class="sd">    :param apply_mask: (boolean) - whether to apply mask</span>
+<span class="sd">    :return mask: (arr) - array of booleans</span>
+<span class="sd">    :return data, lons: - return data, lons</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="k">import</span> <span class="n">shiftgrid</span><span class="p">,</span> <span class="n">maskoceans</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lons</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">lons</span> <span class="o">=</span> <span class="n">shiftgrid</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">lons</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">lons_mesh</span><span class="p">,</span> <span class="n">lats_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span> <span class="n">lats</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">maskoceans</span><span class="p">(</span><span class="n">lons_mesh</span><span class="p">,</span> <span class="n">lats_mesh</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">mask</span>
+
+    <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">apply_mask</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="p">),</span> <span class="n">lons</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mask</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

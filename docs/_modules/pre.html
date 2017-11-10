@@ -1,0 +1,686 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pre &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>pre</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for pre</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">MFDataset</span><span class="p">,</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">ahh</span> <span class="k">import</span> <span class="n">era</span><span class="p">,</span> <span class="n">ext</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;huang.andrew12@gmail.com&#39;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Andrew Huang&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">FileExists</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="wget_fi"><a class="viewcode-back" href="../pre.html#pre.wget_fi">[docs]</a><span class="k">def</span> <span class="nf">wget_fi</span><span class="p">(</span><span class="n">fi_url</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper of wget; downloads files that matches the given glob_str. Can</span>
+<span class="sd">    input username and password if authentication is required.</span>
+
+<span class="sd">    :param fi_url: (str) - the file url</span>
+<span class="sd">    :param out_dir: (str) - name of directory for files to be saved</span>
+<span class="sd">    :param user: (str) - username</span>
+<span class="sd">    :param pwd: (str) - password</span>
+<span class="sd">    :param quiet: (boolean) - whether to download silently</span>
+<span class="sd">    :return out_list: (list) - list of downloaded files&#39; paths</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wget_base</span> <span class="o">=</span> <span class="s2">&quot;wget -r -np -nd -nc --glob=on&quot;</span>
+
+    <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
+        <span class="n">add_on_cmd</span> <span class="o">=</span> <span class="s2">&quot; -q&quot;</span>
+        <span class="n">wget_base</span> <span class="o">+=</span> <span class="n">add_on_cmd</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pwd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">add_on_cmd</span> <span class="o">=</span> <span class="s2">&quot; --user=</span><span class="si">{user}</span><span class="s2"> </span><span class="se">\</span>
+<span class="s2">                  --password=</span><span class="si">{pwd}</span><span class="s2"> &#39;</span><span class="si">{fi_url}</span><span class="s2">&#39;&quot;</span> \
+                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">pwd</span><span class="o">=</span><span class="n">pwd</span><span class="p">,</span>
+                          <span class="n">fi_url</span><span class="o">=</span><span class="n">fi_url</span><span class="p">)</span>
+        <span class="n">wget_base</span> <span class="o">+=</span> <span class="n">add_on_cmd</span>
+    <span class="n">wget_cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{base}</span><span class="s2"> &#39;</span><span class="si">{fi_url}</span><span class="s2">&#39;&quot;</span> \
+        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">wget_base</span><span class="p">,</span> <span class="n">fi_url</span><span class="o">=</span><span class="n">fi_url</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mkdir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+        <span class="n">add_on_cmd</span> <span class="o">=</span> <span class="s2">&quot; -P </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+        <span class="n">wget_cmd</span> <span class="o">+=</span> <span class="n">add_on_cmd</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">wget_cmd</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fi_url</span><span class="p">))</span>
+        <span class="n">out_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fp</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fi_url</span><span class="p">)</span>
+                                                <span class="p">)</span>
+                                    <span class="p">)</span>
+                          <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">out_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">out_list</span></div>
+
+
+<div class="viewcode-block" id="wget_list"><a class="viewcode-back" href="../pre.html#pre.wget_list">[docs]</a><span class="k">def</span> <span class="nf">wget_list</span><span class="p">(</span><span class="n">fi_list</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwd</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper of wget_fi; allows downloading multiple files simulataneously</span>
+<span class="sd">    User/pwd doesn&#39;t work with more than 1 thread.</span>
+
+<span class="sd">    :param fi_list: (list) - list of file urls</span>
+<span class="sd">    :param nthreads: (int) - number of files to download simulataneously</span>
+<span class="sd">    :param out_dir: (str) - name of directory for files to be saved</span>
+<span class="sd">    :param user: (str) - username</span>
+<span class="sd">    :param pwd: (str) - password</span>
+<span class="sd">    :return fi_list: (list) - list of downloaded files&#39; paths</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">nthreads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+        <span class="n">out_list</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">wget_fi</span><span class="p">,</span> <span class="n">fi_list</span><span class="p">,</span>
+                                   <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">fi_list</span><span class="p">:</span>
+            <span class="n">out_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wget_fi</span><span class="p">(</span><span class="n">fi</span><span class="p">,</span>
+                            <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                            <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">pwd</span><span class="o">=</span><span class="n">pwd</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out_list</span></div>
+
+
+<div class="viewcode-block" id="gen_fi_list"><a class="viewcode-back" href="../pre.html#pre.gen_fi_list">[docs]</a><span class="k">def</span> <span class="nf">gen_fi_list</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;1D&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a file list for individual files that</span>
+<span class="sd">    contain monotonically increasing dates</span>
+
+<span class="sd">    :param fmt: (str): string format of files in {dt:%Y%m%d_%H%M} fmt</span>
+<span class="sd">    :param start: (str): start time in &#39;YYYY-MM-DD HH:MM:SS&#39; fmt or similar</span>
+<span class="sd">    :param end: (str): end time in &#39;YYYY-MM-DD HH:MM:SS&#39; fmt or similar</span>
+<span class="sd">    :param freq: (int): interval between each time step</span>
+<span class="sd">    :return fi_list: (list) - list of file names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">fi_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">dts</span><span class="p">:</span>
+        <span class="n">fi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">fi_list</span></div>
+
+
+<div class="viewcode-block" id="peek_nc"><a class="viewcode-back" href="../pre.html#pre.peek_nc">[docs]</a><span class="k">def</span> <span class="nf">peek_nc</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints the variables inside the netCDF dataset.</span>
+
+<span class="sd">    :param file_path: (str) - path to file</span>
+<span class="sd">    :param dump: (boolean) - ncdump file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
+        <span class="n">ncdump_cmd</span> <span class="o">=</span> <span class="s1">&#39;ncdump -h </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">ncdump_cmd</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fi_in</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">fi_in</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="concat_nc"><a class="viewcode-back" href="../pre.html#pre.concat_nc">[docs]</a><span class="k">def</span> <span class="nf">concat_nc</span><span class="p">(</span><span class="n">glob_str</span><span class="p">,</span> <span class="n">out_fi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">rec_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper of NCO&#39;s ncrcat and optional ncks; concatenates a list of netCDF</span>
+<span class="sd">    files given a glob_str (i.e. &#39;THETA.1440x720x50.2010*.nc&#39;) and outputs</span>
+<span class="sd">    concatenated file as the given out_fi. If there&#39;s an error complaining</span>
+<span class="sd">    that there&#39;s no record dimension, can give the dimension name to</span>
+<span class="sd">    concatenate across under rec_dim.</span>
+
+<span class="sd">    :param glob_str: (str) - the naming pattern of the files</span>
+<span class="sd">    :param out_fi: (str) - name of concatenated file</span>
+<span class="sd">    :param in_dir: (str) - directory of input files</span>
+<span class="sd">    :param out_dir: (str) - directory of output file</span>
+<span class="sd">    :param rec_dim: (str) - name of dimension to act as record dimension</span>
+<span class="sd">    :return out_path: (str) - path to final concatenated file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fi_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">glob_str</span><span class="p">)</span>
+    <span class="n">url_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fi_url</span><span class="p">)))</span>
+
+    <span class="n">fi_name</span> <span class="o">=</span> <span class="n">url_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">out_fi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out_fi</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_concat.nc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fi_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;nc&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+    <span class="n">out_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">out_fi</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">rec_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_rd&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fi_name</span><span class="p">)):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{fi_name}</span><span class="s1">_rd already exists! Not remaking </span><span class="si">{fi_name}</span><span class="s1">_rd.&#39;</span>
+                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fi_name</span><span class="o">=</span><span class="n">fi_name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rec_append_cmd</span> <span class="o">=</span> \
+                <span class="s1">&#39;ncks -O --mk_rec_dmn </span><span class="si">{rec_dim}</span><span class="s1"> </span><span class="si">{fi_name}</span><span class="s1"> </span><span class="si">{fi_name}</span><span class="s1">_rd&#39;</span> \
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rec_dim</span><span class="o">=</span><span class="n">rec_dim</span><span class="p">,</span> <span class="n">fi_name</span><span class="o">=</span><span class="n">fi_name</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">rec_append_cmd</span><span class="p">)</span>
+        <span class="n">rec_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_rd&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fi_name</span><span class="p">)</span>
+        <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">rec_str</span><span class="p">]</span> <span class="o">+</span> <span class="n">url_names</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">url_list</span> <span class="o">=</span> <span class="n">url_names</span>
+
+    <span class="n">url_list_str</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;ncrcat </span><span class="si">{input_list}</span><span class="s1"> </span><span class="si">{out_path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">input_list</span><span class="o">=</span><span class="n">url_list_str</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out_path</span></div>
+
+
+<div class="viewcode-block" id="grb2nc"><a class="viewcode-back" href="../pre.html#pre.grb2nc">[docs]</a><span class="k">def</span> <span class="nf">grb2nc</span><span class="p">(</span><span class="n">glob_str</span><span class="p">,</span> <span class="n">in_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates netCDF files from grib files.</span>
+
+<span class="sd">    :param glob_str: (str) - the naming pattern of the files</span>
+<span class="sd">    :param in_dir: (str) - directory of input files</span>
+<span class="sd">    :param out_dir: (str) - directory of output files</span>
+<span class="sd">    :return fo_names: (list) - list of netCDF files&#39; names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fi_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">glob_str</span><span class="p">)</span>
+    <span class="n">fi_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fi_url</span><span class="p">)))</span>
+    <span class="n">fo_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fi_name</span> <span class="ow">in</span> <span class="n">fi_names</span><span class="p">:</span>
+        <span class="n">fo_name_dir</span> <span class="o">=</span> <span class="n">fi_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fi_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.grb&#39;</span><span class="p">):</span>
+            <span class="n">fo_name</span> <span class="o">=</span> <span class="n">fo_name_dir</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.grb&#39;</span><span class="p">,</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fi_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.grb2&#39;</span><span class="p">):</span>
+            <span class="n">fo_name</span> <span class="o">=</span> <span class="n">fo_name_dir</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.grb2&#39;</span><span class="p">,</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fi_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.grib&#39;</span><span class="p">):</span>
+            <span class="n">fo_name</span> <span class="o">=</span> <span class="n">fo_name_dir</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.grib&#39;</span><span class="p">,</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fi_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.grib2&#39;</span><span class="p">):</span>
+            <span class="n">fo_name</span> <span class="o">=</span> <span class="n">fo_name_dir</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.grib2&#39;</span><span class="p">,</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;wgrib2 </span><span class="si">{fi_name}</span><span class="s2"> -netcdf </span><span class="si">{fo_name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                                              <span class="n">fi_name</span><span class="o">=</span><span class="n">fi_name</span><span class="p">,</span>
+                                                              <span class="n">fo_name</span><span class="o">=</span><span class="n">fo_name</span><span class="p">))</span>
+        <span class="n">fo_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fo_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fo_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fo_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fo_names</span></div>
+
+
+<div class="viewcode-block" id="read_nc"><a class="viewcode-back" href="../pre.html#pre.read_nc">[docs]</a><span class="k">def</span> <span class="nf">read_nc</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span>
+            <span class="n">lat</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span>
+            <span class="n">lon</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span>
+            <span class="n">time</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
+            <span class="n">num2date</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">peek</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">extra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">extra2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">extra3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">original</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">already</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">glob</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the netCDF4 file&#39;s lats, lons, and time and returns those</span>
+<span class="sd">    parameters in addition to an opened netCDF4 dataset.</span>
+
+<span class="sd">    :param file_path: (str) - path to file</span>
+<span class="sd">    :param peek: (boolean) - print out description of netCDF4 dataset</span>
+<span class="sd">    :param dump: (boolean) - run peek_nc(dump=True)</span>
+<span class="sd">    :param extra: (str) - return an extra variable given name of variable</span>
+<span class="sd">    :param num2date: (boolean) - converts time to datetime</span>
+<span class="sd">    :param extra2: (str) - return a second variable given name of variable</span>
+<span class="sd">    :param extra3: (str) - return a third variable given name of variable</span>
+<span class="sd">    :param already: (boolean) - whether lat, lon, time is already imported</span>
+<span class="sd">                                if so, only return the extras</span>
+<span class="sd">    :param glob: (boolean) - indicate whether file_path is &quot;glob&quot;able</span>
+<span class="sd">    :return fi_in, time, lats, lons: \</span>
+<span class="sd">            (netCDF4.Dataset, np.array, np.array, np.array) \</span>
+<span class="sd">            netCDF4 dataset, time array, latitude array, longitude array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;.nc&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file_path</span><span class="p">:</span>
+        <span class="n">file_path</span> <span class="o">+=</span> <span class="s1">&#39;.nc&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Suffix .nc was appended to filepath!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">glob</span><span class="p">:</span>
+        <span class="n">fi_in</span> <span class="o">=</span> <span class="n">MFDataset</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fi_in</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">peek</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">fi_in</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
+        <span class="n">peek_nc</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">already</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">extra</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extra_var</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">extra</span><span class="p">][:]</span>
+            <span class="k">if</span> <span class="n">extra2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">extra_var2</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">extra2</span><span class="p">][:]</span>
+                <span class="k">if</span> <span class="n">extra3</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">extra_var3</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">extra3</span><span class="p">][:]</span>
+                    <span class="k">return</span> <span class="n">extra_var</span><span class="p">,</span> <span class="n">extra_var2</span><span class="p">,</span> <span class="n">extra_var3</span>
+                <span class="k">return</span> <span class="n">extra_var</span><span class="p">,</span> <span class="n">extra_var2</span>
+            <span class="k">return</span> <span class="n">extra_var</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lats</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">lat</span><span class="p">][:]</span>
+            <span class="n">lons</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">lon</span><span class="p">][:]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to find the given lat, lon variable name!&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Will try the variable names: &quot;latitude&quot; and &quot;longitude&quot;&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">lats</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">][:]</span>
+                <span class="n">lons</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">][:]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to find any lat, lon variable; returning None&#39;</span><span class="p">)</span>
+                <span class="n">lats</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">lons</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">num2date</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">time_var</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">time</span><span class="p">]</span>
+                    <span class="n">time</span> <span class="o">=</span> <span class="n">era</span><span class="o">.</span><span class="n">time2dt</span><span class="p">(</span><span class="n">time_var</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to convert time to dt; returning time&#39;</span><span class="p">)</span>
+                    <span class="n">time</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">time</span><span class="p">][:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">time</span><span class="p">][:]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to create time variable; returning None&#39;</span><span class="p">)</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">extra</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extra_var</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">extra</span><span class="p">][:]</span>
+            <span class="k">if</span> <span class="n">extra2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">extra_var2</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">extra2</span><span class="p">][:]</span>
+                <span class="k">if</span> <span class="n">extra3</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">extra_var3</span> <span class="o">=</span> <span class="n">fi_in</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">extra3</span><span class="p">][:]</span>
+                    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span><span class="p">,</span> <span class="n">extra_var</span><span class="p">,</span> <span class="n">extra_var2</span><span class="p">,</span> <span class="n">extra_var3</span>
+                <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span><span class="p">,</span> <span class="n">extra_var</span><span class="p">,</span> <span class="n">extra_var2</span>
+            <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span><span class="p">,</span> <span class="n">extra_var</span>
+        <span class="k">if</span> <span class="n">original</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fi_in</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fi_in</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span></div>
+
+
+<div class="viewcode-block" id="export_nc"><a class="viewcode-back" href="../pre.html#pre.export_nc">[docs]</a><span class="k">def</span> <span class="nf">export_nc</span><span class="p">(</span><span class="n">var_list</span><span class="p">,</span> <span class="n">name_list</span><span class="p">,</span> <span class="n">units_list</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">out</span><span class="o">=</span><span class="s1">&#39;untitled&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;NETCDF3_64BIT&#39;</span><span class="p">,</span> <span class="n">lat_name</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="n">lon_name</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span>
+              <span class="n">time_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">z_name</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">lat_units</span><span class="o">=</span><span class="s1">&#39;degrees_north&#39;</span><span class="p">,</span>
+              <span class="n">lon_units</span><span class="o">=</span><span class="s1">&#39;degrees_east&#39;</span><span class="p">,</span> <span class="n">time_units</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span>
+              <span class="n">z_units</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span> <span class="n">time_calendar</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exports a netCDF3 file.</span>
+
+<span class="sd">    :param var_list: (list) - list of variables in np.array</span>
+<span class="sd">    :param name_list: (list) - list of variable names in string</span>
+<span class="sd">    :param units_list: (list) - list of units names in string</span>
+<span class="sd">    :param lat: (np.array) - array of latitudes</span>
+<span class="sd">    :param lon: (np.array) - array of longitudes</span>
+<span class="sd">    :param out: (str) - name of output file</span>
+<span class="sd">    :param time: (np.array) - time/date variable</span>
+<span class="sd">    :param z: (np.array) - z/level/depth variable</span>
+<span class="sd">    :param description: (str) - description of data</span>
+<span class="sd">    :param fmt: (str) - output format</span>
+<span class="sd">    :param time_name: (str) - what to name the time variable</span>
+<span class="sd">    :param z_name: (str) - what to name the z variable</span>
+<span class="sd">    :param lat_units: (str) - units of latitude</span>
+<span class="sd">    :param lon_units: (str) - units of longitude</span>
+<span class="sd">    :param time_units: (str) - units of time</span>
+<span class="sd">    :param z_units: (str) - units of z</span>
+<span class="sd">    :param time_calendar: (str) - type of calendar</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;.nc&#39;</span>
+
+    <span class="k">if</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">out</span><span class="p">:</span>
+        <span class="n">output_fi_name</span> <span class="o">=</span> <span class="n">out</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">output_fi_name</span> <span class="o">=</span> <span class="n">out</span> <span class="o">+</span> <span class="n">suffix</span>
+
+    <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">output_fi_name</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Output file already exists; appending _1!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">output_fi_name</span><span class="p">:</span>
+                <span class="n">output_fi_name</span> <span class="o">=</span> <span class="n">output_fi_name</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_1&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+
+    <span class="n">fi_out</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">output_fi_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fi_out</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+
+    <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fi_out</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">time_name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>
+        <span class="n">fi_out_time</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">time_name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">time_name</span><span class="p">,))</span>
+        <span class="n">fi_out_time</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">time_units</span>
+        <span class="k">if</span> <span class="n">time_units</span> <span class="ow">is</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Please set time_units; defaulting to unknown</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time_calendar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+            <span class="n">fi_out_time</span><span class="o">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">time_calendar</span>
+        <span class="n">fi_out_time</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">time</span>
+
+    <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fi_out</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">z_name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="n">fi_out_z</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">z_name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">z_name</span><span class="p">,))</span>
+        <span class="n">fi_out_z</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">z_units</span>
+        <span class="k">if</span> <span class="n">z_units</span> <span class="o">==</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Please set z_units; defaulting to unknown</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">fi_out_z</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">z</span>
+
+    <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fi_out</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">lat_name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span>
+        <span class="n">fi_out_lat</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">lat_name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">lat_name</span><span class="p">,))</span>
+        <span class="n">fi_out_lat</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">lat_units</span>
+        <span class="n">fi_out_lat</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">lat</span>
+
+    <span class="k">if</span> <span class="n">lon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fi_out</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">lon_name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span>
+        <span class="n">fi_out_lon</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">lon_name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">lon_name</span><span class="p">,))</span>
+        <span class="n">fi_out_lon</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">lon_units</span>
+        <span class="n">fi_out_lon</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">lon</span>
+
+    <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">units</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">var_list</span><span class="p">,</span> <span class="n">name_list</span><span class="p">,</span> <span class="n">units_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fi_out_var</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
+                                                   <span class="p">(</span>
+                                                    <span class="n">time_name</span><span class="p">,</span>
+                                                    <span class="n">z_name</span><span class="p">,</span>
+                                                    <span class="p">)</span>
+                                                   <span class="p">)</span>
+                <span class="n">fi_out_var</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+                <span class="n">fi_out_var</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">var</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fi_out_var</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
+                                                   <span class="p">(</span>
+                                                    <span class="n">time_name</span><span class="p">,</span>
+                                                    <span class="n">z_name</span><span class="p">,</span>
+                                                    <span class="n">lat_name</span><span class="p">,</span>
+                                                    <span class="n">lon_name</span>
+                                                    <span class="p">)</span>
+                                                   <span class="p">)</span>
+                <span class="n">fi_out_var</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+                <span class="n">fi_out_var</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="k">elif</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fi_out_var</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
+                                                   <span class="p">(</span><span class="n">z_name</span><span class="p">))</span>
+                <span class="n">fi_out_var</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+                <span class="n">fi_out_var</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">var</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fi_out_var</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
+                                                   <span class="p">(</span><span class="n">z_name</span><span class="p">,</span>
+                                                    <span class="n">lat_name</span><span class="p">,</span>
+                                                    <span class="n">lon_name</span>
+                                                    <span class="p">)</span>
+                                                   <span class="p">)</span>
+                <span class="n">fi_out_var</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+                <span class="n">fi_out_var</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="k">elif</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fi_out_var</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
+                                                   <span class="p">(</span><span class="n">time_name</span><span class="p">))</span>
+                <span class="n">fi_out_var</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+                <span class="n">fi_out_var</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">var</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fi_out_var</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
+                                                   <span class="p">(</span><span class="n">time_name</span><span class="p">,</span>
+                                                    <span class="n">lat_name</span><span class="p">,</span>
+                                                    <span class="n">lon_name</span>
+                                                    <span class="p">)</span>
+                                                   <span class="p">)</span>
+                <span class="n">fi_out_var</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+                <span class="n">fi_out_var</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fi_out_var</span> <span class="o">=</span> <span class="n">fi_out</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
+                                               <span class="p">(</span><span class="n">lat_name</span><span class="p">,</span>
+                                                <span class="n">lon_name</span>
+                                                <span class="p">)</span>
+                                               <span class="p">)</span>
+            <span class="n">fi_out_var</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="n">fi_out_var</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">var</span>
+
+    <span class="n">fi_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="join_cwd"><a class="viewcode-back" href="../pre.html#pre.join_cwd">[docs]</a><span class="k">def</span> <span class="nf">join_cwd</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Join a path to current working directory. If path isn&#39;t provided,</span>
+<span class="sd">    returns current working directory.</span>
+
+<span class="sd">    :param path: (str) - path to be joined to current working directory</span>
+<span class="sd">    :param up: (int) - number of times to go up one directory</span>
+<span class="sd">    :param fp: (boolean) - whether to use originating file path</span>
+<span class="sd">    :return full_path: (str) - full designated path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">this_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">this_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">up</span><span class="p">):</span>
+        <span class="n">this_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">this_dir</span><span class="p">)</span>
+    <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">this_dir</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">full_path</span></div>
+
+
+<div class="viewcode-block" id="mkdir"><a class="viewcode-back" href="../pre.html#pre.mkdir">[docs]</a><span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="n">dir_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a directory if it doesn&#39;t exist.</span>
+
+<span class="sd">    :param dir_path: (str) - directory path</span>
+<span class="sd">    :return dir_path: (str) - directory path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dir_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dir_path</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dir_path</span></div>
+
+
+<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../pre.html#pre.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">spawn_dates</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">spawn_times</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">clear</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read a time series csv and tries to create a datetime index.</span>
+
+<span class="sd">    :param path: (str) - path to csv</span>
+<span class="sd">    :param date: (str) - name of time column to be converted</span>
+<span class="sd">    :param time: (arr) - column name of time; will merge with time</span>
+<span class="sd">    :param skiprows: (list) - list of row numbers to skip</span>
+<span class="sd">    :param spawn_dates: (boolean) - whether to spawn year, month, day cols</span>
+<span class="sd">    :param spawn_times: (boolean) - whether to spawn hour, minute, second cols</span>
+<span class="sd">    :param year: (arr) - column name of years</span>
+<span class="sd">    :param month: (arr) - column name of months</span>
+<span class="sd">    :param day: (arr) - column name of days</span>
+<span class="sd">    :param hour: (arr) - column name of hours</span>
+<span class="sd">    :param minute: (arr) - column name of minutes</span>
+<span class="sd">    :param second: (arr) - column name of seconds</span>
+<span class="sd">    :param dropna: (boolean) - whether to drop rows with NaNs</span>
+<span class="sd">    :param strip: (boolean) - whether to remove whitespace in column names</span>
+<span class="sd">    :param lower: (boolean) - whether to convert column names to lower came</span>
+<span class="sd">    :return df: (pd.DataFrame) - dataframe with datetime index</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dropna</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="n">dt_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="n">month</span><span class="p">],</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="n">day</span><span class="p">]}</span>
+        <span class="k">if</span> <span class="n">hour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dt_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">hour</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">minute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dt_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">minute</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">second</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dt_dict</span><span class="p">[</span><span class="s1">&#39;second&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">second</span><span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">era</span><span class="o">.</span><span class="n">time2dt</span><span class="p">(</span><span class="o">**</span><span class="n">dt_dict</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dropna</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">date</span><span class="p">]</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">time</span><span class="p">]</span>
+        <span class="n">dts</span> <span class="o">=</span> <span class="n">era</span><span class="o">.</span><span class="n">time2dt</span><span class="p">(</span><span class="n">dates</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">times</span><span class="p">,</span> <span class="n">strf</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">dts</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="n">date</span><span class="p">,</span>
+                         <span class="n">parse_dates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dropna</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dropna</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">clear</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">month</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">day</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">minute</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">era</span><span class="o">.</span><span class="n">spawn_dates_times</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                               <span class="n">spawn_dates</span><span class="o">=</span><span class="n">spawn_dates</span><span class="p">,</span>
+                               <span class="n">spawn_times</span><span class="o">=</span><span class="n">spawn_times</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">strip</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">lower</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="merge"><a class="viewcode-back" href="../pre.html#pre.merge">[docs]</a><span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span> <span class="n">monthly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge two dataframes</span>
+
+<span class="sd">    :param df1: (pd.DataFrame) - dataframe to merge</span>
+<span class="sd">    :param df2: (pd.DataFrame) - another dataframe to merge</span>
+<span class="sd">    :param monthly: (boolean) - whether to groupby month first</span>
+<span class="sd">    :return merged_df: (pd.DataFrame) - combined df1 and df2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">monthly</span><span class="p">:</span>
+        <span class="n">df1</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;1M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">df2</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;1M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">df1</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span>
+                     <span class="n">how</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">,</span>
+                     <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="make_xr"><a class="viewcode-back" href="../pre.html#pre.make_xr">[docs]</a><span class="k">def</span> <span class="nf">make_xr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create an on the go xarray.</span>
+
+<span class="sd">    :param data: (np.array) - array of data</span>
+<span class="sd">    :param lat: (np.array) - array of latitudes</span>
+<span class="sd">    :param lon: (np.array) - array of longitudes</span>
+<span class="sd">    :param z: (np.array) - z/level/depth variable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">z</span><span class="p">},</span>
+                              <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;level&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">z</span><span class="p">,</span>
+                                            <span class="s1">&#39;lat&#39;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">:</span> <span class="n">lon</span><span class="p">},</span>
+                              <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">z</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;level&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">z</span><span class="p">,</span>
+                                            <span class="s1">&#39;lat&#39;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">:</span> <span class="n">lon</span><span class="p">},</span>
+                              <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span>
+                              <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span>
+                                            <span class="s1">&#39;lat&#39;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">:</span> <span class="n">lon</span><span class="p">},</span>
+                              <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;lat&#39;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">:</span> <span class="n">lon</span><span class="p">},</span>
+                          <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ds</span></div>
+
+
+<div class="viewcode-block" id="save"><a class="viewcode-back" href="../pre.html#pre.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save a dataframe as a csv and pickle file</span>
+
+<span class="sd">    :param df: (pd.DataFrame) - dataframe to save</span>
+<span class="sd">    :param name: (str) - output name</span>
+<span class="sd">    :return name: (str) - output name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">name</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

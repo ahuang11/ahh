@@ -1,0 +1,422 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pre.py - prepatory functions &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="sci.py - science functions" href="sci.html" />
+    <link rel="prev" title="Welcome to ahh’s documentation!" href="index.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>pre.py - prepatory functions</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Welcome to ahh&#8217;s documentation!</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="sci.html">sci.py - science functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="module-pre">
+<span id="pre-py-prepatory-functions"></span><h1>pre.py - prepatory functions<a class="headerlink" href="#module-pre" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pre.concat_nc">
+<code class="descclassname">pre.</code><code class="descname">concat_nc</code><span class="sig-paren">(</span><em>glob_str</em>, <em>out_fi=None</em>, <em>in_dir='./'</em>, <em>out_dir='./'</em>, <em>rec_dim=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#concat_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.concat_nc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper of NCO&#8217;s ncrcat and optional ncks; concatenates a list of netCDF
+files given a glob_str (i.e. &#8216;THETA.1440x720x50.2010*.nc&#8217;) and outputs
+concatenated file as the given out_fi. If there&#8217;s an error complaining
+that there&#8217;s no record dimension, can give the dimension name to
+concatenate across under rec_dim.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>glob_str</strong> &#8211; (str) - the naming pattern of the files</li>
+<li><strong>out_fi</strong> &#8211; (str) - name of concatenated file</li>
+<li><strong>in_dir</strong> &#8211; (str) - directory of input files</li>
+<li><strong>out_dir</strong> &#8211; (str) - directory of output file</li>
+<li><strong>rec_dim</strong> &#8211; (str) - name of dimension to act as record dimension</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return out_path:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(str) - path to final concatenated file</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.export_nc">
+<code class="descclassname">pre.</code><code class="descname">export_nc</code><span class="sig-paren">(</span><em>var_list</em>, <em>name_list</em>, <em>units_list</em>, <em>lat=None</em>, <em>lon=None</em>, <em>out='untitled'</em>, <em>time=None</em>, <em>z=None</em>, <em>description=None</em>, <em>fmt='NETCDF3_64BIT'</em>, <em>lat_name='lat'</em>, <em>lon_name='lon'</em>, <em>time_name='time'</em>, <em>z_name='z'</em>, <em>lat_units='degrees_north'</em>, <em>lon_units='degrees_east'</em>, <em>time_units='unknown'</em>, <em>z_units='unknown'</em>, <em>time_calendar='unknown'</em>, <em>replace=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#export_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.export_nc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports a netCDF3 file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var_list</strong> &#8211; (list) - list of variables in np.array</li>
+<li><strong>name_list</strong> &#8211; (list) - list of variable names in string</li>
+<li><strong>units_list</strong> &#8211; (list) - list of units names in string</li>
+<li><strong>lat</strong> &#8211; (np.array) - array of latitudes</li>
+<li><strong>lon</strong> &#8211; (np.array) - array of longitudes</li>
+<li><strong>out</strong> &#8211; (str) - name of output file</li>
+<li><strong>time</strong> &#8211; (np.array) - time/date variable</li>
+<li><strong>z</strong> &#8211; (np.array) - z/level/depth variable</li>
+<li><strong>description</strong> &#8211; (str) - description of data</li>
+<li><strong>fmt</strong> &#8211; (str) - output format</li>
+<li><strong>time_name</strong> &#8211; (str) - what to name the time variable</li>
+<li><strong>z_name</strong> &#8211; (str) - what to name the z variable</li>
+<li><strong>lat_units</strong> &#8211; (str) - units of latitude</li>
+<li><strong>lon_units</strong> &#8211; (str) - units of longitude</li>
+<li><strong>time_units</strong> &#8211; (str) - units of time</li>
+<li><strong>z_units</strong> &#8211; (str) - units of z</li>
+<li><strong>time_calendar</strong> &#8211; (str) - type of calendar</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.gen_fi_list">
+<code class="descclassname">pre.</code><code class="descname">gen_fi_list</code><span class="sig-paren">(</span><em>fmt</em>, <em>start</em>, <em>end</em>, <em>freq='1D'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#gen_fi_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.gen_fi_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a file list for individual files that
+contain monotonically increasing dates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fmt</strong> &#8211; (str): string format of files in {dt:%Y%m%d_%H%M} fmt</li>
+<li><strong>start</strong> &#8211; (str): start time in &#8216;YYYY-MM-DD HH:MM:SS&#8217; fmt or similar</li>
+<li><strong>end</strong> &#8211; (str): end time in &#8216;YYYY-MM-DD HH:MM:SS&#8217; fmt or similar</li>
+<li><strong>freq</strong> &#8211; (int): interval between each time step</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return fi_list:</th><td class="field-body"><p class="first last">(list) - list of file names</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.grb2nc">
+<code class="descclassname">pre.</code><code class="descname">grb2nc</code><span class="sig-paren">(</span><em>glob_str</em>, <em>in_dir='./'</em>, <em>out_dir='./'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#grb2nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.grb2nc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates netCDF files from grib files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>glob_str</strong> &#8211; (str) - the naming pattern of the files</li>
+<li><strong>in_dir</strong> &#8211; (str) - directory of input files</li>
+<li><strong>out_dir</strong> &#8211; (str) - directory of output files</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return fo_names:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(list) - list of netCDF files&#8217; names</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.join_cwd">
+<code class="descclassname">pre.</code><code class="descname">join_cwd</code><span class="sig-paren">(</span><em>path=''</em>, <em>up=0</em>, <em>fp=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#join_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.join_cwd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join a path to current working directory. If path isn&#8217;t provided,
+returns current working directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; (str) - path to be joined to current working directory</li>
+<li><strong>up</strong> &#8211; (int) - number of times to go up one directory</li>
+<li><strong>fp</strong> &#8211; (boolean) - whether to use originating file path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return full_path:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(str) - full designated path</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.make_xr">
+<code class="descclassname">pre.</code><code class="descname">make_xr</code><span class="sig-paren">(</span><em>data</em>, <em>lat=None</em>, <em>lon=None</em>, <em>time=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#make_xr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.make_xr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an on the go xarray.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> &#8211; (np.array) - array of data</li>
+<li><strong>lat</strong> &#8211; (np.array) - array of latitudes</li>
+<li><strong>lon</strong> &#8211; (np.array) - array of longitudes</li>
+<li><strong>z</strong> &#8211; (np.array) - z/level/depth variable</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.merge">
+<code class="descclassname">pre.</code><code class="descname">merge</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em>, <em>monthly=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge two dataframes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df1</strong> &#8211; (pd.DataFrame) - dataframe to merge</li>
+<li><strong>df2</strong> &#8211; (pd.DataFrame) - another dataframe to merge</li>
+<li><strong>monthly</strong> &#8211; (boolean) - whether to groupby month first</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return merged_df:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(pd.DataFrame) - combined df1 and df2</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.mkdir">
+<code class="descclassname">pre.</code><code class="descname">mkdir</code><span class="sig-paren">(</span><em>dir_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#mkdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a directory if it doesn&#8217;t exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dir_path</strong> &#8211; (str) - directory path</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return dir_path:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(str) - directory path</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.peek_nc">
+<code class="descclassname">pre.</code><code class="descname">peek_nc</code><span class="sig-paren">(</span><em>file_path</em>, <em>dump=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#peek_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.peek_nc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the variables inside the netCDF dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_path</strong> &#8211; (str) - path to file</li>
+<li><strong>dump</strong> &#8211; (boolean) - ncdump file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.read_csv">
+<code class="descclassname">pre.</code><code class="descname">read_csv</code><span class="sig-paren">(</span><em>path=''</em>, <em>date=None</em>, <em>time=None</em>, <em>skiprows=None</em>, <em>spawn_dates=False</em>, <em>spawn_times=False</em>, <em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em>, <em>minute=None</em>, <em>second=None</em>, <em>clear=False</em>, <em>dropna=False</em>, <em>strip=True</em>, <em>lower=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#read_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.read_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a time series csv and tries to create a datetime index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; (str) - path to csv</li>
+<li><strong>date</strong> &#8211; (str) - name of time column to be converted</li>
+<li><strong>time</strong> &#8211; (arr) - column name of time; will merge with time</li>
+<li><strong>skiprows</strong> &#8211; (list) - list of row numbers to skip</li>
+<li><strong>spawn_dates</strong> &#8211; (boolean) - whether to spawn year, month, day cols</li>
+<li><strong>spawn_times</strong> &#8211; (boolean) - whether to spawn hour, minute, second cols</li>
+<li><strong>year</strong> &#8211; (arr) - column name of years</li>
+<li><strong>month</strong> &#8211; (arr) - column name of months</li>
+<li><strong>day</strong> &#8211; (arr) - column name of days</li>
+<li><strong>hour</strong> &#8211; (arr) - column name of hours</li>
+<li><strong>minute</strong> &#8211; (arr) - column name of minutes</li>
+<li><strong>second</strong> &#8211; (arr) - column name of seconds</li>
+<li><strong>dropna</strong> &#8211; (boolean) - whether to drop rows with NaNs</li>
+<li><strong>strip</strong> &#8211; (boolean) - whether to remove whitespace in column names</li>
+<li><strong>lower</strong> &#8211; (boolean) - whether to convert column names to lower came</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return df:</th><td class="field-body"><p class="first last">(pd.DataFrame) - dataframe with datetime index</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.read_nc">
+<code class="descclassname">pre.</code><code class="descname">read_nc</code><span class="sig-paren">(</span><em>file_path</em>, <em>lat='lat'</em>, <em>lon='lon'</em>, <em>time='time'</em>, <em>num2date=True</em>, <em>peek=False</em>, <em>dump=False</em>, <em>extra=None</em>, <em>extra2=None</em>, <em>extra3=None</em>, <em>original=False</em>, <em>already=False</em>, <em>glob=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#read_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.read_nc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the netCDF4 file&#8217;s lats, lons, and time and returns those
+parameters in addition to an opened netCDF4 dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_path</strong> &#8211; (str) - path to file</li>
+<li><strong>peek</strong> &#8211; (boolean) - print out description of netCDF4 dataset</li>
+<li><strong>dump</strong> &#8211; (boolean) - run peek_nc(dump=True)</li>
+<li><strong>extra</strong> &#8211; (str) - return an extra variable given name of variable</li>
+<li><strong>num2date</strong> &#8211; (boolean) - converts time to datetime</li>
+<li><strong>extra2</strong> &#8211; (str) - return a second variable given name of variable</li>
+<li><strong>extra3</strong> &#8211; (str) - return a third variable given name of variable</li>
+<li><strong>already</strong> &#8211; (boolean) - whether lat, lon, time is already imported
+if so, only return the extras</li>
+<li><strong>glob</strong> &#8211; (boolean) - indicate whether file_path is &#8220;glob&#8221;able</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return fi_in, time, lats, lons:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(netCDF4.Dataset, np.array, np.array, np.array)             netCDF4 dataset, time array, latitude array, longitude array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.save">
+<code class="descclassname">pre.</code><code class="descname">save</code><span class="sig-paren">(</span><em>df</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a dataframe as a csv and pickle file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> &#8211; (pd.DataFrame) - dataframe to save</li>
+<li><strong>name</strong> &#8211; (str) - output name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return name:</th><td class="field-body"><p class="first last">(str) - output name</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.wget_fi">
+<code class="descclassname">pre.</code><code class="descname">wget_fi</code><span class="sig-paren">(</span><em>fi_url</em>, <em>out_dir=None</em>, <em>user=None</em>, <em>pwd=None</em>, <em>quiet=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#wget_fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.wget_fi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper of wget; downloads files that matches the given glob_str. Can
+input username and password if authentication is required.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fi_url</strong> &#8211; (str) - the file url</li>
+<li><strong>out_dir</strong> &#8211; (str) - name of directory for files to be saved</li>
+<li><strong>user</strong> &#8211; (str) - username</li>
+<li><strong>pwd</strong> &#8211; (str) - password</li>
+<li><strong>quiet</strong> &#8211; (boolean) - whether to download silently</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return out_list:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(list) - list of downloaded files&#8217; paths</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pre.wget_list">
+<code class="descclassname">pre.</code><code class="descname">wget_list</code><span class="sig-paren">(</span><em>fi_list</em>, <em>nthreads=1</em>, <em>out_dir=None</em>, <em>user=None</em>, <em>pwd=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pre.html#wget_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pre.wget_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper of wget_fi; allows downloading multiple files simulataneously
+User/pwd doesn&#8217;t work with more than 1 thread.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fi_list</strong> &#8211; (list) - list of file urls</li>
+<li><strong>nthreads</strong> &#8211; (int) - number of files to download simulataneously</li>
+<li><strong>out_dir</strong> &#8211; (str) - name of directory for files to be saved</li>
+<li><strong>user</strong> &#8211; (str) - username</li>
+<li><strong>pwd</strong> &#8211; (str) - password</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return fi_list:</th><td class="field-body"><p class="first last">(list) - list of downloaded files&#8217; paths</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Welcome to ahh&#8217;s documentation!</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="sci.html">sci.py - science functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>era.py - era of time functions &#8212; Andrew Huang Helps? 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="vis.py - visualization functions" href="vis.html" />
+    <link rel="prev" title="ext.py - extra functions" href="ext.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Andrew Huang Helps? 1.0.0 documentation</span></a></h1>
+        <h2 class="heading"><span>era.py - era of time functions</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="ext.html">ext.py - extra functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="vis.html">vis.py - visualization functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="module-era">
+<span id="era-py-era-of-time-functions"></span><h1>era.py - era of time functions<a class="headerlink" href="#module-era" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="era.clockit">
+<code class="descclassname">era.</code><code class="descname">clockit</code><span class="sig-paren">(</span><em>start</em>, <em>n=''</em>, <em>save=None</em>, <em>show=True</em>, <em>return_td=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#clockit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.clockit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get elapsed time since start.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> &#8211; (datetime.datetime) - start datetime</li>
+<li><strong>n</strong> &#8211; (str) - label/description</li>
+<li><strong>save</strong> &#8211; (str) - name of file to export error message to</li>
+<li><strong>show</strong> &#8211; (boolean): whether to print time taken</li>
+<li><strong>return_dt</strong> &#8211; (boolean): whether to return datetime timedelta taken</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return time_taken:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(datetime.timedelta) - time taken</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.dt2jul">
+<code class="descclassname">era.</code><code class="descname">dt2jul</code><span class="sig-paren">(</span><em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#dt2jul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.dt2jul" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return julian day out of a datetime.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dt</strong> &#8211; (datetime.datetime/int) - datetime</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return jday:</th><td class="field-body">(int) - julian day</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.dt2num">
+<code class="descclassname">era.</code><code class="descname">dt2num</code><span class="sig-paren">(</span><em>dt</em>, <em>reverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#dt2num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.dt2num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert datetime to a number to indicate location on matplotlib plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dt</strong> &#8211; (datetime.datetime) - a datetime object</li>
+<li><strong>reverse</strong> &#8211; (boolean) - whether to reverse the operation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return mdate:</th><td class="field-body"><p class="first last">(scalar) - value of datetime as a number</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.dt2seas">
+<code class="descclassname">era.</code><code class="descname">dt2seas</code><span class="sig-paren">(</span><em>dts</em>, <em>four=True</em>, <em>target=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#dt2seas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.dt2seas" title="Permalink to this definition">¶</a></dt>
+<dd><p>From a datetime array create an array of seasons.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dts</strong> &#8211; (arr) - array of datetimes</li>
+<li><strong>four</strong> &#8211; (boolean) - limit to four seasons</li>
+<li><strong>target</strong> &#8211; (str) - whether the season &#8220;begin&#8221; or &#8220;end&#8221; at month</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return dt_arr:</th><td class="field-body"><p class="first last">(xr.DataArray) - array of seasons</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.dt2spec">
+<code class="descclassname">era.</code><code class="descname">dt2spec</code><span class="sig-paren">(</span><em>dt</em>, <em>spec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#dt2spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.dt2spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert datetimes to specified time value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dt</strong> &#8211; (datetime.datetime) - array of datetimes</li>
+<li><strong>spec</strong> &#8211; (str) - name of time value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return spec_arr:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(list) - list of specified time values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.dtnow">
+<code class="descclassname">era.</code><code class="descname">dtnow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#dtnow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.dtnow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current UTC in datetime.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return utcnow:</th><td class="field-body">(datetime.datetime) - UTC now in datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.jul2dt">
+<code class="descclassname">era.</code><code class="descname">jul2dt</code><span class="sig-paren">(</span><em>jday</em>, <em>year=2010</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#jul2dt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.jul2dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the datetime from a julian date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>jday</strong> &#8211; (int) - julian day</li>
+<li><strong>year</strong> &#8211; (int) - year to determine if leap</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return dt:</th><td class="field-body"><p class="first last">(datetime.datetime) - respective datetime</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.shift_months">
+<code class="descclassname">era.</code><code class="descname">shift_months</code><span class="sig-paren">(</span><em>dts</em>, <em>nmonths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#shift_months"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.shift_months" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift datetime(s) by number of months</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dts</strong> &#8211; (datetime.datetime/arr) - datetime objects</li>
+<li><strong>nmonths</strong> &#8211; (int) - number of months to shift the datetime</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return dts:</th><td class="field-body"><p class="first last">(datetime.datetime) - datetime shifted by nmonths</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.spawn_dates_times">
+<code class="descclassname">era.</code><code class="descname">spawn_dates_times</code><span class="sig-paren">(</span><em>df</em>, <em>spawn_dates=True</em>, <em>spawn_times=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#spawn_dates_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.spawn_dates_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build date/times column from a timeseries dataframe</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> &#8211; (pd.DataFrame) - dataframe with datetime index</li>
+<li><strong>spawn_dates</strong> &#8211; (boolean) - whether to spawn year, month, day cols</li>
+<li><strong>spawn_times</strong> &#8211; (boolean) - whether to spawn hour, minute, second cols</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return df:</th><td class="field-body"><p class="first last">(pd.DataFrame) - dataframe with datetime index</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.str2spec">
+<code class="descclassname">era.</code><code class="descname">str2spec</code><span class="sig-paren">(</span><em>str_arr</em>, <em>spec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#str2spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.str2spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert strings to specified time value assuming
+&#8216;%Y-%m-%d %H:%M:%S&#8217; format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>str</strong> &#8211; (str) - array of strings</li>
+<li><strong>spec</strong> &#8211; (str) - name of time value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return spec_arr:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(np.array) - list of specified time values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.td2dict">
+<code class="descclassname">era.</code><code class="descname">td2dict</code><span class="sig-paren">(</span><em>td</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#td2dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.td2dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a breakdown of the timedelta</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>td</strong> &#8211; (datetime.timedelta) - datetime timedelta</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return td_breakdown:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">(dict) - dictionary containing breakdown</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="era.time2dt">
+<code class="descclassname">era.</code><code class="descname">time2dt</code><span class="sig-paren">(</span><em>time=None</em>, <em>strf='infer'</em>, <em>calendar='standard'</em>, <em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em>, <em>minute=None</em>, <em>second=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/era.html#time2dt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#era.time2dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a datetime array based on an unopened time variable or arrays of
+time strings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>time</strong> &#8211; (netCDF4.Variable/str) - unopened time var/string type array</li>
+<li><strong>strf</strong> &#8211; (str) - time format of string, option of &#8216;infer&#8217;</li>
+<li><strong>calendar</strong> &#8211; (str) - type of calendar</li>
+<li><strong>year</strong> &#8211; (arr) - array of years</li>
+<li><strong>month</strong> &#8211; (arr) - array of months</li>
+<li><strong>day</strong> &#8211; (arr) - array of days</li>
+<li><strong>hour</strong> &#8211; (arr) - array of hours</li>
+<li><strong>minute</strong> &#8211; (arr) - array of minutes</li>
+<li><strong>second</strong> &#8211; (arr) - array of seconds</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return dt_arr:</th><td class="field-body"><p class="first last">(np.array) - array of datetimes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="ext.html">ext.py - extra functions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="vis.html">vis.py - visualization functions</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2017, Andrew Huang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
