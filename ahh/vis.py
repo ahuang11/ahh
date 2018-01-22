@@ -9,6 +9,7 @@ from ahh.ext import (round_to, get_order_mag, report_err, lonw2e)
 from ahh.sci import get_stats, get_norm_anom, get_anom, get_norm
 from ahh.era import td2dict
 import matplotlib as mpl
+mpl.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import matplotlib.patches as mpatches
@@ -530,7 +531,8 @@ def plot_map(data, lats=None, lons=None, figsize=None, ax=None, stipple=None,
         data, lons = get_ocean_mask(data, lats, lons,
                                     reverse=True, apply_mask=True)
 
-    projection = _get_projection_logic(projection, lons, central_longitude)
+    projection = _get_projection_logic(projection, central_longitude)
+    # check if I need to subtract lons
 
     if lons2 is None and lats2 is None:
         lats2, lons2 = lats, lons
@@ -688,7 +690,7 @@ def plot_bounds(ax, lat1=-90, lat2=90, lon1=-180, lon2=180,
     :param kwargs: (kwargs) - additional keyword arguments
     :param close: (boolean) - whether to close figure after saving
     """
-    projection = _get_projection_logic(projection)
+    projection = _get_projection_logic(projection, central_longitude)
 
     lat1, lat2, lon1, lon2 = _get_lat_lon_lim_logic(latlim, lonlim,
                                                     lat1, lat2, lon1, lon2)
@@ -1671,7 +1673,7 @@ def init_map(lat1=-90, lat2=90, lon1=-180, lon2=180,
     _set_figsize_logic(figsize=figsize, rows=rows,
                        cols=cols, pos=pos, dpi=dpi)
 
-    projection = _get_projection_logic(projection)
+    projection = _get_projection_logic(projection, central_longitude=central_longitude)
 
     if ax is None:
         ax = plt.subplot(rows, cols, pos, projection=projection)
@@ -4334,11 +4336,10 @@ def _get_lat_lon_lim_logic(latlim, lonlim,
     return lat1, lat2, lon1, lon2
 
 
-def _get_projection_logic(projection, lons=None, central_longitude=0):
+def _get_projection_logic(projection, central_longitude=0):
     import cartopy.crs as ccrs
     if projection is None:
         if central_longitude != 0:
-            lons -= central_longitude
             projection = ccrs.PlateCarree(central_longitude=central_longitude)
         else:
             projection = ccrs.PlateCarree()
