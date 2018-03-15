@@ -2,6 +2,8 @@
 
 ### Functions that I can easily reference, and maybe you too!
 
+### Note that this package is now deprecated! Please see https://github.com/ahuang11/holoext for my new project!
+
 ## HOW TO GET IT:
 New-school method:
 1. `pip install ahh`
